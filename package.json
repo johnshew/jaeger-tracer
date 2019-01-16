@@ -1,0 +1,29 @@
+{
+  "name": "jaeger-tracer",
+  "version": "1.0.0",
+  "description": "client library for jaegar to ease out the instrumenting in express and any other backend application in nodejs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abdoolly/jaeger-tracer.git"
+  },
+  "keywords": [
+    "jaegar",
+    "client",
+    "instrument",
+    "instrumenting",
+    "opentracing",
+    "express",
+    "nodejs",
+    "jaegar-client"
+  ],
+  "author": "abdoolly",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/abdoolly/jaeger-tracer/issues"
+  },
+  "homepage": "https://github.com/abdoolly/jaeger-tracer#readme"
+}
