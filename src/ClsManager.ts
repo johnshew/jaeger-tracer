@@ -29,10 +29,10 @@ export let associateNMSWithReqBeforeGoingNext = (req: any, res: any, next: Funct
 
     // just calling the response interceptor middleware to be applied on the response later on
     // this middleware should call next inside it automatically
-    interceptorMiddleware(req, res, next);
+    // interceptorMiddleware(req, res, next);
 
     // going to the next middleware normally 
-    // next();
+    next();
     // });
 }
 
