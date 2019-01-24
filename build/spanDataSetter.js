@@ -37,15 +37,17 @@ exports.setResSpanData = function (req, res, span) {
         });
         span.finish();
     });
-    var responseSpanLog = {};
+    var responseSpanLog = {
+        event: 'response',
+    };
     res.once('finish', function () {
-        span.log(__assign({}, responseSpanLog, { headers: this.getHeaders(), statusCode: this.statusCode }));
+        span.log(__assign({}, responseSpanLog, { headers: this.getHeaders(), statusCode: this.statusCode, statusMessage: this.statusMessage }));
         span.finish();
     });
     var responseInterceptor = function (body, req, res) {
-        responseSpanLog = __assign({}, responseSpanLog, { event: 'response', status: 'normal', body: body });
+        responseSpanLog = __assign({}, responseSpanLog, { status: 'normal', body: body });
         return body;
     };
-    return express_mung_1.json(responseInterceptor);
+    return express_mung_1.json(responseInterceptor, { mungError: true });
 };
 //# sourceMappingURL=spanDataSetter.js.map

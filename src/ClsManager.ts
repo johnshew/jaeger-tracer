@@ -1,4 +1,4 @@
-import { createNamespace } from 'continuation-local-storage';
+import { createNamespace, Namespace } from 'continuation-local-storage';
 import { constants } from './constants';
 import { Span } from './interfaces/jaegaer-span.interface';
 
@@ -21,7 +21,7 @@ export let associateNMSWithReqBeforeGoingNext = (req: any, res: any, next: Funct
 
     // setting the main span to be accessible by all other function whereever we want them
     // and also this will always be binded to the existence to that req and res 
-    session.set(constants.mainSpan, mainSpan);
+    saveToCls(constants.mainSpan, mainSpan);
 
     // just calling the response interceptor middleware to be applied on the response later on
     // this middleware should call next inside it automatically
@@ -36,6 +36,6 @@ export let getFromCls = (key: string) => {
     return session.get(key);
 }
 
-export let getContext = () => {
+export let getContext = (): Namespace => {
     return session;
 }

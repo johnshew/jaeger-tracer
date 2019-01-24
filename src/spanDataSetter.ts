@@ -31,14 +31,17 @@ export let setResSpanData = (req: Request, res: Response, span: Span): any => {
         span.finish();
     });
 
-    let responseSpanLog = {};
+    let responseSpanLog: any = {
+        event: 'response',
+    };
 
     res.once('finish', function (this: Response) {
         // just finishing the span in case the mung did not work
         span.log({
             ...responseSpanLog,
             headers: this.getHeaders(),
-            statusCode: this.statusCode
+            statusCode: this.statusCode,
+            statusMessage: this.statusMessage
         });
         span.finish();
     });
@@ -47,7 +50,6 @@ export let setResSpanData = (req: Request, res: Response, span: Span): any => {
     let responseInterceptor = (body: any, req: Request, res: Response) => {
         responseSpanLog = {
             ...responseSpanLog,
-            event: 'response',
             status: 'normal',
             body,
         };
@@ -55,5 +57,5 @@ export let setResSpanData = (req: Request, res: Response, span: Span): any => {
         return body;
     }
 
-    return json(responseInterceptor);
+    return json(responseInterceptor, { mungError: true });
 }

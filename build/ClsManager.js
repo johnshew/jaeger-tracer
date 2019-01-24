@@ -6,7 +6,7 @@ var session = continuation_local_storage_1.createNamespace(constants_1.constants
 exports.associateNMSWithReqBeforeGoingNext = function (req, res, next, mainSpan, interceptorMiddleware) {
     session.bindEmitter(req);
     session.bindEmitter(res);
-    session.set(constants_1.constants.mainSpan, mainSpan);
+    exports.saveToCls(constants_1.constants.mainSpan, mainSpan);
     interceptorMiddleware(req, res, next);
 };
 exports.saveToCls = function (key, value) {

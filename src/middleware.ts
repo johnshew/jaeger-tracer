@@ -5,6 +5,8 @@ import { spanMaker } from "./span";
 import { setReqSpanData, setResSpanData } from "./spanDataSetter";
 import { initTracer } from './tracer';
 import { constants } from "./constants";
+import { requestWrapper } from ".";
+import { unirestWrapper } from "./requestWrappers";
 let { FORMAT_HTTP_HEADERS } = require('opentracing');
 
 
@@ -17,6 +19,9 @@ export let jaegarTracerMiddleWare = (serviceName: string, config?: Config, optio
     // initiating the tracer outside the middleware so we dont have to initiate it everytime a request comes
     let tracer = initTracer(serviceName, config, options);
 
+    // initiating the cls
+    let session = getContext();
+
     /**
      * @description this is an express middleware to be used to instrument an application 
      * requests and responses 
@@ -24,30 +29,27 @@ export let jaegarTracerMiddleWare = (serviceName: string, config?: Config, optio
      * @param res 
      * @param next 
      */
-    return (req: Request, res: Response, next: Function) => {
+    let middleware = (req: Request, res: Response, next: Function) => {
+        // saving the tracer in the cls after its initialization
+        saveToCls(constants.tracer, tracer);
 
-        // initiating the cls
-        let session = getContext();
+        // extract the parent context from the tracer
+        let parentSpanContext = tracer.extract(FORMAT_HTTP_HEADERS, req.headers);
+        let mainReqSpan = spanMaker(req.path, parentSpanContext, tracer);
 
-        // running everything inside the context 
-        session.run(() => {
-            // saving the tracer in the cls after its initialization
-            saveToCls(constants.tracer, tracer);
+        // setting span data on the request
+        setReqSpanData(req, res, mainReqSpan);
 
-            // extract the parent context from the tracer
-            let parentSpanContext = tracer.extract(FORMAT_HTTP_HEADERS, req.headers);
-            let mainReqSpan = spanMaker(req.path, parentSpanContext, tracer);
+        // setting span data on the response and ending the span when the response comes
+        let responseInterceptor = setResSpanData(req, res, mainReqSpan);
 
-            // setting span data on the request
-            setReqSpanData(req, res, mainReqSpan);
-
-            // setting span data on the response and ending the span when the response comes
-            let responseInterceptor = setResSpanData(req, res, mainReqSpan);
-
-            // calling the cls manager and after that running the response interceptor inside it 
-            associateNMSWithReqBeforeGoingNext(req, res, next, mainReqSpan, responseInterceptor);
-        });
+        // calling the cls manager and after that running the response interceptor inside it 
+        associateNMSWithReqBeforeGoingNext(req, res, next, mainReqSpan, responseInterceptor);
     };
+
+    let result = session.runAndReturn(() => middleware);
+    console.log('result', result);
+    return result;
 }
 
 
