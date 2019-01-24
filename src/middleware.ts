@@ -8,6 +8,7 @@ import { constants } from "./constants";
 import { createNamespace } from "continuation-local-storage";
 let { FORMAT_HTTP_HEADERS } = require('opentracing');
 let session = createNamespace(constants.clsNamespace);
+let context = session.createContext();
 
 /**
  * @description this is the function that returns the main middleware 
@@ -17,6 +18,7 @@ export let jaegarTracerMiddleWare = (serviceName: string, config?: Config, optio
 
     // initiating the tracer outside the middleware so we dont have to initiate it everytime a request comes
     let tracer = initTracer(serviceName, config, options);
+
 
     /**
      * @description this is an express middleware to be used to instrument an application 
@@ -43,7 +45,8 @@ export let jaegarTracerMiddleWare = (serviceName: string, config?: Config, optio
         associateNMSWithReqBeforeGoingNext(req, res, next, mainReqSpan, responseInterceptor);
     };
 
-    return session.bind(middleware);
+    let result = session.bind(middleware, context);
+    return result;
 }
 
 

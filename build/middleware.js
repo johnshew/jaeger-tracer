@@ -8,6 +8,7 @@ var constants_1 = require("./constants");
 var continuation_local_storage_1 = require("continuation-local-storage");
 var FORMAT_HTTP_HEADERS = require('opentracing').FORMAT_HTTP_HEADERS;
 var session = continuation_local_storage_1.createNamespace(constants_1.constants.clsNamespace);
+var context = session.createContext();
 exports.jaegarTracerMiddleWare = function (serviceName, config, options) {
     var tracer = tracer_1.initTracer(serviceName, config, options);
     var middleware = function (req, res, next) {
@@ -18,6 +19,7 @@ exports.jaegarTracerMiddleWare = function (serviceName, config, options) {
         var responseInterceptor = spanDataSetter_1.setResSpanData(req, res, mainReqSpan);
         ClsManager_1.associateNMSWithReqBeforeGoingNext(req, res, next, mainReqSpan, responseInterceptor);
     };
-    return session.bind(middleware);
+    var result = session.bind(middleware, context);
+    return result;
 };
 //# sourceMappingURL=middleware.js.map
