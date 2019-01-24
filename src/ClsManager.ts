@@ -21,8 +21,8 @@ export let associateNMSWithReqBeforeGoingNext = (req: any, res: any, next: Funct
 
     // before rerouting just inputing binding the req , and res to the cls to 
     // be used later to the spans
-    // session.bindEmitter(req);
-    // session.bindEmitter(res);
+    session.bindEmitter(req);
+    session.bindEmitter(res);
 
     // setting the main span to be accessible by all other function whereever we want them
     // and also this will always be binded to the existence to that req and res 
@@ -35,11 +35,6 @@ export let associateNMSWithReqBeforeGoingNext = (req: any, res: any, next: Funct
     // going to the next middleware normally 
     // next();
     // });
-}
-
-export let initiateCLS = (req: Request, res: Response) => {
-    session.bindEmitter(req);
-    session.bindEmitter(res);
 }
 
 export let saveToCls = (key: string, value: any) => {
