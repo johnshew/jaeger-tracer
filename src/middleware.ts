@@ -11,7 +11,7 @@ let { FORMAT_HTTP_HEADERS } = require('opentracing');
  * @description this is the function that returns the main middleware 
  * @param serviceName 
  */
-export let jaegarTracerMiddleWare = (serviceName: string, config: Config, options: Options) => {
+export let jaegarTracerMiddleWare = (serviceName: string, config?: Config, options?: Options) => {
 
     // initiating the tracer outside the middleware so we dont have to initiate it everytime a request comes
     let tracer = initTracer(serviceName, config, options);
