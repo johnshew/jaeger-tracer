@@ -20,30 +20,37 @@ export let setReqSpanData = (req: Request, res: Response, span: Span) => {
 export let setResSpanData = (req: Request, res: Response, span: Span): any => {
 
     // listening to the error 
-    res.once('error', (err) => {
+    res.once('error', function (this: Response, err: Error) {
         span.log({
             event: 'response',
             status: 'error',
             error: err,
-            headers: res.getHeaders()
+            headers: this.getHeaders(),
+            statusCode: this.statusCode
         });
         span.finish();
     });
 
-    res.once('finish', () => {
+    let responseSpanLog = {};
+
+    res.once('finish', function (this: Response) {
         // just finishing the span in case the mung did not work
+        span.log({
+            ...responseSpanLog,
+            headers: this.getHeaders(),
+            statusCode: this.statusCode
+        });
         span.finish();
     });
 
     // do not forget the error case test
     let responseInterceptor = (body: any, req: Request, res: Response) => {
-        span.log({
+        responseSpanLog = {
+            ...responseSpanLog,
             event: 'response',
             status: 'normal',
-            statusCode: res.statusCode,
             body,
-            headers: res.getHeaders(),
-        });
+        };
 
         return body;
     }
