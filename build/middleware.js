@@ -4,10 +4,13 @@ var ClsManager_1 = require("./ClsManager");
 var span_1 = require("./span");
 var spanDataSetter_1 = require("./spanDataSetter");
 var tracer_1 = require("./tracer");
+var constants_1 = require("./constants");
 var FORMAT_HTTP_HEADERS = require('opentracing').FORMAT_HTTP_HEADERS;
 exports.jaegarTracerMiddleWare = function (serviceName, config, options) {
     var tracer = tracer_1.initTracer(serviceName, config, options);
     return function (req, res, next) {
+        ClsManager_1.initiateCLS(req, res);
+        ClsManager_1.saveToCls(constants_1.constants.tracer, tracer);
         var parentSpanContext = tracer.extract(FORMAT_HTTP_HEADERS, req.headers);
         var mainReqSpan = span_1.spanMaker(req.path, parentSpanContext, tracer);
         spanDataSetter_1.setReqSpanData(req, res, mainReqSpan);

@@ -1,6 +1,7 @@
 import { createNamespace } from 'continuation-local-storage';
 import { constants } from './constants';
 import { Span } from './interfaces/jaegaer-span.interface';
+import { Request, Response } from 'express';
 
 
 let session = createNamespace(constants.clsNamespace);
@@ -16,24 +17,29 @@ let session = createNamespace(constants.clsNamespace);
 export let associateNMSWithReqBeforeGoingNext = (req: any, res: any, next: Function, mainSpan: Span, interceptorMiddleware: Function) => {
 
     // binding the cls to the req 
-    session.run(() => {
+    // session.run(() => {
 
-        // before rerouting just inputing binding the req , and res to the cls to 
-        // be used later to the spans
-        session.bindEmitter(req);
-        session.bindEmitter(res);
+    // before rerouting just inputing binding the req , and res to the cls to 
+    // be used later to the spans
+    // session.bindEmitter(req);
+    // session.bindEmitter(res);
 
-        // setting the main span to be accessible by all other function whereever we want them
-        // and also this will always be binded to the existence to that req and res 
-        session.set(constants.mainSpan, mainSpan);
+    // setting the main span to be accessible by all other function whereever we want them
+    // and also this will always be binded to the existence to that req and res 
+    session.set(constants.mainSpan, mainSpan);
 
-        // just calling the response interceptor middleware to be applied on the response later on
-        // this middleware should call next inside it automatically
-        interceptorMiddleware(req, res, next);
+    // just calling the response interceptor middleware to be applied on the response later on
+    // this middleware should call next inside it automatically
+    interceptorMiddleware(req, res, next);
 
-        // going to the next middleware normally 
-        // next();
-    });
+    // going to the next middleware normally 
+    // next();
+    // });
+}
+
+export let initiateCLS = (req: Request, res: Response) => {
+    session.bindEmitter(req);
+    session.bindEmitter(res);
 }
 
 export let saveToCls = (key: string, value: any) => {

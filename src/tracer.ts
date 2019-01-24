@@ -55,9 +55,6 @@ export let initTracer = (serviceName: string, config: Config = {}, options: Opti
     // initialize the tracer
     let tracer = initJaegerTracer(config, options);
 
-    // saving the tracer in the cls after its initialization
-    saveToCls(constants.tracer, tracer);
-
     return tracer;
 };
 

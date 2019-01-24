@@ -11,8 +11,6 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var ClsManager_1 = require("./ClsManager");
-var constants_1 = require("./constants");
 var initJaegerTracer = require('jaeger-client').initTracer;
 exports.initTracer = function (serviceName, config, options) {
     if (config === void 0) { config = {}; }
@@ -33,7 +31,6 @@ exports.initTracer = function (serviceName, config, options) {
             },
         } }, options);
     var tracer = initJaegerTracer(config, options);
-    ClsManager_1.saveToCls(constants_1.constants.tracer, tracer);
     return tracer;
 };
 //# sourceMappingURL=tracer.js.map

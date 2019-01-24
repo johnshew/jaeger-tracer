@@ -1,9 +1,10 @@
 import { Request, Response } from "express-serve-static-core";
-import { associateNMSWithReqBeforeGoingNext } from "./ClsManager";
+import { associateNMSWithReqBeforeGoingNext, saveToCls, initiateCLS } from "./ClsManager";
 import { Config, Options } from "./interfaces/jaeger-client-config.interface";
 import { spanMaker } from "./span";
 import { setReqSpanData, setResSpanData } from "./spanDataSetter";
 import { initTracer } from './tracer';
+import { constants } from "./constants";
 let { FORMAT_HTTP_HEADERS } = require('opentracing');
 
 
@@ -24,6 +25,12 @@ export let jaegarTracerMiddleWare = (serviceName: string, config?: Config, optio
      * @param next 
      */
     return (req: Request, res: Response, next: Function) => {
+
+        // initiating the cls
+        initiateCLS(req, res);
+
+        // saving the tracer in the cls after its initialization
+        saveToCls(constants.tracer, tracer);
 
         // extract the parent context from the tracer
         let parentSpanContext = tracer.extract(FORMAT_HTTP_HEADERS, req.headers);
