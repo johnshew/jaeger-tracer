@@ -29,6 +29,7 @@
   "homepage": "https://github.com/abdoolly/jaeger-tracer#readme",
   "dependencies": {
     "continuation-local-storage": "^3.2.1",
+    "express-interceptor": "^1.2.0",
     "express-mung": "^0.5.1",
     "jaeger-client": "^3.13.0",
     "opentracing": "^0.14.3"

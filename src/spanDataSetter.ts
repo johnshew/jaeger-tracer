@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { json } from 'express-mung';
 import { Span } from "./interfaces/jaegaer-span.interface";
 const { Tags, FORMAT_HTTP_HEADERS } = require('opentracing');
+let interceptor = require('express-interceptor');
 
 export let setReqSpanData = (req: Request, res: Response, span: Span) => {
     span.setTag(Tags.HTTP_URL, req.path);
@@ -28,8 +28,7 @@ export let setResSpanData = (req: Request, res: Response, span: Span): any => {
         span.finish();
     });
 
-
-    let responseInterceptor = (body: any, req: Request, res: Response) => {
+    let responseInterceptor = (body: any, send: Function) => {
         span.log({
             event: 'response',
             status: 'normal',
@@ -37,8 +36,15 @@ export let setResSpanData = (req: Request, res: Response, span: Span): any => {
         });
         span.finish();
 
-        return body;
+        return send(body);
     }
 
-    return json(responseInterceptor);
+    return interceptor((req: Request, res: Response) => {
+        return {
+            // just return true means that any kind of response need to be intercepted
+            isInterceptable: () => true,
+            // this is the function that will happen on response interception
+            intercept: responseInterceptor
+        };
+    });
 }
