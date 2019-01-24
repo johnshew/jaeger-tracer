@@ -21,6 +21,7 @@ export let jaegarTracerMiddleWare = (serviceName: string, config?: Config, optio
 
     // initiating the cls
     let session = getContext();
+    session.createContext();
 
     /**
      * @description this is an express middleware to be used to instrument an application 
@@ -47,7 +48,7 @@ export let jaegarTracerMiddleWare = (serviceName: string, config?: Config, optio
         associateNMSWithReqBeforeGoingNext(req, res, next, mainReqSpan, responseInterceptor);
     };
 
-    let result = session.runAndReturn(() => middleware);
+    let result = session.bind(middleware);
     console.log('result', result);
     return result;
 }

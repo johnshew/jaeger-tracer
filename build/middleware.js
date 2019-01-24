@@ -9,6 +9,7 @@ var FORMAT_HTTP_HEADERS = require('opentracing').FORMAT_HTTP_HEADERS;
 exports.jaegarTracerMiddleWare = function (serviceName, config, options) {
     var tracer = tracer_1.initTracer(serviceName, config, options);
     var session = ClsManager_1.getContext();
+    session.createContext();
     var middleware = function (req, res, next) {
         ClsManager_1.saveToCls(constants_1.constants.tracer, tracer);
         var parentSpanContext = tracer.extract(FORMAT_HTTP_HEADERS, req.headers);
@@ -17,7 +18,7 @@ exports.jaegarTracerMiddleWare = function (serviceName, config, options) {
         var responseInterceptor = spanDataSetter_1.setResSpanData(req, res, mainReqSpan);
         ClsManager_1.associateNMSWithReqBeforeGoingNext(req, res, next, mainReqSpan, responseInterceptor);
     };
-    var result = session.runAndReturn(function () { return middleware; });
+    var result = session.bind(middleware);
     console.log('result', result);
     return result;
 };
