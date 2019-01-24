@@ -1,15 +1,17 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var _a = require('opentracing'), Tags = _a.Tags, FORMAT_HTTP_HEADERS = _a.FORMAT_HTTP_HEADERS;
 var express_mung_1 = require("express-mung");
+var Tags = require('opentracing').Tags;
 exports.setReqSpanData = function (req, res, span) {
     span.setTag(Tags.HTTP_URL, req.path);
     span.setTag(Tags.HTTP_METHOD, req.method);
+    span.setTag('Hostname', req.hostname);
     span.log({
         event: 'request',
         body: req.body,
         params: req.params,
         query: req.query,
+        headers: req.headers
     });
     return span;
 };
@@ -19,16 +21,21 @@ exports.setResSpanData = function (req, res, span) {
             event: 'response',
             status: 'error',
             error: err,
+            headers: res.getHeaders
         });
+        span.finish();
+    });
+    res.once('finish', function () {
         span.finish();
     });
     var responseInterceptor = function (body, req, res) {
         span.log({
             event: 'response',
             status: 'normal',
+            statusCode: res.statusCode,
             body: body,
+            headers: res.getHeaders,
         });
-        span.finish();
         return body;
     };
     return express_mung_1.json(responseInterceptor);
