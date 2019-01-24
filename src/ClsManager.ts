@@ -14,10 +14,6 @@ let session = createNamespace(constants.clsNamespace);
  * @param next {Function}
  */
 export let associateNMSWithReqBeforeGoingNext = (req: any, res: any, next: Function, mainSpan: Span, interceptorMiddleware: Function) => {
-
-    // binding the cls to the req 
-    // session.run(() => {
-
     // before rerouting just inputing binding the req , and res to the cls to 
     // be used later to the spans
     session.bindEmitter(req);
@@ -29,11 +25,7 @@ export let associateNMSWithReqBeforeGoingNext = (req: any, res: any, next: Funct
 
     // just calling the response interceptor middleware to be applied on the response later on
     // this middleware should call next inside it automatically
-    // interceptorMiddleware(req, res, next);
-
-    // going to the next middleware normally 
-    next();
-    // });
+    interceptorMiddleware(req, res, next);
 }
 
 export let saveToCls = (key: string, value: any) => {

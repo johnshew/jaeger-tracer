@@ -22,9 +22,6 @@ exports.setResSpanData = function (req, res, span) {
         });
         span.finish();
     });
-    res.once('finish', function () {
-        mainInterceptorMW(req, res, function () { });
-    });
     var responseInterceptor = function (body, req, res) {
         span.log({
             event: 'response',
@@ -34,6 +31,6 @@ exports.setResSpanData = function (req, res, span) {
         span.finish();
         return body;
     };
-    var mainInterceptorMW = express_mung_1.json(responseInterceptor);
+    return express_mung_1.json(responseInterceptor);
 };
 //# sourceMappingURL=spanDataSetter.js.map

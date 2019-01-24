@@ -7,7 +7,7 @@ exports.associateNMSWithReqBeforeGoingNext = function (req, res, next, mainSpan,
     session.bindEmitter(req);
     session.bindEmitter(res);
     session.set(constants_1.constants.mainSpan, mainSpan);
-    next();
+    interceptorMiddleware(req, res, next);
 };
 exports.saveToCls = function (key, value) {
     return session.set(key, value);

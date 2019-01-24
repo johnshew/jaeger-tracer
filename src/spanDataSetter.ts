@@ -28,10 +28,7 @@ export let setResSpanData = (req: Request, res: Response, span: Span): any => {
         span.finish();
     });
 
-    res.once('finish', () => {
-        mainInterceptorMW(req, res, () => { });
-    });
-
+    // do not forget the error case test
     let responseInterceptor = (body: any, req: Request, res: Response) => {
         span.log({
             event: 'response',
@@ -43,5 +40,5 @@ export let setResSpanData = (req: Request, res: Response, span: Span): any => {
         return body;
     }
 
-    let mainInterceptorMW = json(responseInterceptor);
+    return json(responseInterceptor);
 }
