@@ -21,7 +21,7 @@ exports.setResSpanData = function (req, res, span) {
             event: 'response',
             status: 'error',
             error: err,
-            headers: res.getHeaders
+            headers: res.getHeaders()
         });
         span.finish();
     });
@@ -34,7 +34,7 @@ exports.setResSpanData = function (req, res, span) {
             status: 'normal',
             statusCode: res.statusCode,
             body: body,
-            headers: res.getHeaders,
+            headers: res.getHeaders(),
         });
         return body;
     };

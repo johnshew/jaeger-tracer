@@ -25,7 +25,7 @@ export let setResSpanData = (req: Request, res: Response, span: Span): any => {
             event: 'response',
             status: 'error',
             error: err,
-            headers: res.getHeaders
+            headers: res.getHeaders()
         });
         span.finish();
     });
@@ -42,7 +42,7 @@ export let setResSpanData = (req: Request, res: Response, span: Span): any => {
             status: 'normal',
             statusCode: res.statusCode,
             body,
-            headers: res.getHeaders,
+            headers: res.getHeaders(),
         });
 
         return body;
