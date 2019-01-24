@@ -1,7 +1,6 @@
 import { createNamespace } from 'continuation-local-storage';
 import { constants } from './constants';
 import { Span } from './interfaces/jaegaer-span.interface';
-import { Request, Response } from 'express';
 
 
 let session = createNamespace(constants.clsNamespace);
