@@ -8,7 +8,6 @@ var constants_1 = require("./constants");
 var continuation_local_storage_1 = require("continuation-local-storage");
 var FORMAT_HTTP_HEADERS = require('opentracing').FORMAT_HTTP_HEADERS;
 var session = continuation_local_storage_1.createNamespace(constants_1.constants.clsNamespace);
-session.createContext();
 exports.jaegarTracerMiddleWare = function (serviceName, config, options) {
     var tracer = tracer_1.initTracer(serviceName, config, options);
     var middleware = function (req, res, next) {

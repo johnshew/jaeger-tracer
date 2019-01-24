@@ -8,8 +8,6 @@ import { constants } from "./constants";
 import { createNamespace } from "continuation-local-storage";
 let { FORMAT_HTTP_HEADERS } = require('opentracing');
 let session = createNamespace(constants.clsNamespace);
-session.createContext();
-
 
 /**
  * @description this is the function that returns the main middleware 
