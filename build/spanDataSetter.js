@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var express_mung_1 = require("express-mung");
 var _a = require('opentracing'), Tags = _a.Tags, FORMAT_HTTP_HEADERS = _a.FORMAT_HTTP_HEADERS;
+var interceptor = require('express-interceptor');
 exports.setReqSpanData = function (req, res, span) {
     span.setTag(Tags.HTTP_URL, req.path);
     span.setTag(Tags.HTTP_METHOD, req.method);
@@ -22,15 +22,20 @@ exports.setResSpanData = function (req, res, span) {
         });
         span.finish();
     });
-    var responseInterceptor = function (body, req, res) {
+    var responseInterceptor = function (body, send) {
         span.log({
             event: 'response',
             status: 'normal',
             body: body,
         });
         span.finish();
-        return body;
+        return send(body);
     };
-    return express_mung_1.json(responseInterceptor);
+    return interceptor(function (req, res) {
+        return {
+            isInterceptable: function () { return true; },
+            intercept: responseInterceptor
+        };
+    });
 };
 //# sourceMappingURL=spanDataSetter.js.map
