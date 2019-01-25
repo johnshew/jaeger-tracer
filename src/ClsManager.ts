@@ -1,4 +1,4 @@
-import { createNamespace, Namespace, getNamespace } from 'cls-hooked';
+import { createNamespace, Namespace, getNamespace } from 'continuation-local-storage';
 import { constants } from './constants';
 import { Span } from './interfaces/jaegaer-span.interface';
 let session = createNamespace(constants.clsNamespace);

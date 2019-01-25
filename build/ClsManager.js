@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var cls_hooked_1 = require("cls-hooked");
+var continuation_local_storage_1 = require("continuation-local-storage");
 var constants_1 = require("./constants");
-var session = cls_hooked_1.createNamespace(constants_1.constants.clsNamespace);
+var session = continuation_local_storage_1.createNamespace(constants_1.constants.clsNamespace);
 exports.associateNMSWithReqBeforeGoingNext = session.bind(function (req, res, next, mainSpan, interceptorMiddleware) {
     session.bindEmitter(req);
     session.bindEmitter(res);
