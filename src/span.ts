@@ -27,17 +27,17 @@ export let spanMaker = (name: string, parentContext: SpanContext | null, tracer:
  */
 export let makeSpan = (name: string) => {
     // get tracer from the cls 
-    let tracer: Tracer = getFromCls(constants.tracer);
+    let tracer: any = getFromCls(constants.tracer);
 
     // getting the parent context from the cls 
-    let parentContext = getFromCls(constants.parentContext);
+    let parentContext: any = getFromCls(constants.parentContext);
 
     return spanMaker(name, parentContext, tracer);
 }
 
 export let makeSpanWithParent = (name: string, parentContext: SpanContext) => {
     // get tracer from the cls 
-    let tracer: Tracer = getFromCls(constants.tracer);
+    let tracer: any = getFromCls(constants.tracer);
     return spanMaker(name, parentContext, tracer);
 }
 

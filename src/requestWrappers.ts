@@ -3,7 +3,8 @@ import { constants } from "./constants";
 import { Tracer } from "./interfaces/jaegar-tracer.interface";
 import { Span } from "./interfaces/jaegaer-span.interface";
 const { FORMAT_HTTP_HEADERS } = require('opentracing');
-
+import { getNamespace } from 'continuation-local-storage';
+let session = getNamespace(constants.clsNamespace);
 
 /**
  * @description this is a function which will be used to inject headers in 
@@ -59,8 +60,11 @@ export let requestWrapper = (request: any) => {
  */
 let getInjectHeaders = () => {
     // getting the main span from the cls 
-    let tracer: Tracer = getFromCls(constants.tracer);
-    let span: Span = getFromCls(constants.mainSpan);
+    // let tracer: any = getFromCls(constants.tracer);
+    // let span: any = getFromCls(constants.mainSpan);
+
+    let tracer = session.get(constants.mainSpan);
+    let span = session.get(constants.mainSpan);
 
     let headers = {};
 

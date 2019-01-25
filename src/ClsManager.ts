@@ -22,7 +22,9 @@ export let associateNMSWithReqBeforeGoingNext = session.bind(function (req: any,
 
     // just calling the response interceptor middleware to be applied on the response later on
     // this middleware should call next inside it automatically
-    interceptorMiddleware(req, res, next);
+    session.run(() => {
+        interceptorMiddleware(req, res, next);
+    });
 });
 
 export let saveToCls = session.bind((key: string, value: any) => {
