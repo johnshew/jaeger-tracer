@@ -1,5 +1,3 @@
-import { saveToCls } from "./ClsManager";
-import { constants } from "./constants";
 import { Tracer } from "./interfaces/jaegar-tracer.interface";
 import { Config, Options } from "./interfaces/jaeger-client-config.interface";
 

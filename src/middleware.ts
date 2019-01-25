@@ -1,54 +1,47 @@
 import { Request, Response } from "express-serve-static-core";
-import { associateNMSWithReqBeforeGoingNext, saveToCls, getContext } from "./ClsManager";
+import { associateNMSWithReqBeforeGoingNext, saveToCls } from "./ClsManager";
+import { constants } from "./constants";
 import { Config, Options } from "./interfaces/jaeger-client-config.interface";
 import { spanMaker } from "./span";
 import { setReqSpanData, setResSpanData } from "./spanDataSetter";
 import { initTracer } from './tracer';
-import { constants } from "./constants";
-import { createNamespace } from "continuation-local-storage";
 let { FORMAT_HTTP_HEADERS } = require('opentracing');
-let session = createNamespace(constants.clsNamespace);
-let context = session.createContext();
 
 /**
  * @description this is the function that returns the main middleware 
  * @param serviceName 
  */
-export let jaegarTracerMiddleWare = (serviceName: string, config?: Config, options?: Options) => {
+export let jaegarTracerMiddleWare = function (serviceName: string, config?: Config, options?: Options) {
 
-    let middlewareBinded = session.runAndReturn(() => {
-        // initiating the tracer outside the middleware so we dont have to initiate it everytime a request comes
-        let tracer = initTracer(serviceName, config, options);
+    // initiating the tracer outside the middleware so we dont have to initiate it everytime a request comes
+    let tracer = initTracer(serviceName, config, options);
 
-        /**
-         * @description this is an express middleware to be used to instrument an application 
-         * requests and responses 
-         * @param req 
-         * @param res 
-         * @param next 
-         */
-        let middleware = (req: Request, res: Response, next: Function) => {
-            // saving the tracer in the cls after its initialization
-            saveToCls(constants.tracer, tracer);
+    /**
+     * @description this is an express middleware to be used to instrument an application 
+     * requests and responses 
+     * @param req 
+     * @param res 
+     * @param next 
+     */
+    let middleware = (req: Request, res: Response, next: Function) => {
+        // saving the tracer in the cls after its initialization
+        saveToCls(constants.tracer, tracer);
 
-            // extract the parent context from the tracer
-            let parentSpanContext = tracer.extract(FORMAT_HTTP_HEADERS, req.headers);
-            let mainReqSpan = spanMaker(req.path, parentSpanContext, tracer);
+        // extract the parent context from the tracer
+        let parentSpanContext = tracer.extract(FORMAT_HTTP_HEADERS, req.headers);
+        let mainReqSpan = spanMaker(req.path, parentSpanContext, tracer);
 
-            // setting span data on the request
-            setReqSpanData(req, res, mainReqSpan);
+        // setting span data on the request
+        setReqSpanData(req, res, mainReqSpan);
 
-            // setting span data on the response and ending the span when the response comes
-            let responseInterceptor = setResSpanData(req, res, mainReqSpan);
+        // setting span data on the response and ending the span when the response comes
+        let responseInterceptor = setResSpanData(req, res, mainReqSpan);
 
-            // calling the cls manager and after that running the response interceptor inside it 
-            associateNMSWithReqBeforeGoingNext(req, res, next, mainReqSpan, responseInterceptor);
-        };
+        // calling the cls manager and after that running the response interceptor inside it 
+        associateNMSWithReqBeforeGoingNext(req, res, next, mainReqSpan, responseInterceptor);
+    };
 
-        return middleware;
-    });
-
-    return middlewareBinded;
+    return middleware;
 }
 
 
