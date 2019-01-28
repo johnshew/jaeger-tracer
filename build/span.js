@@ -5,6 +5,7 @@ var constants_1 = require("./constants");
 exports.spanMaker = function (name, parentContext, tracer) {
     if (!parentContext)
         return tracer.startSpan(name);
+    ClsManager_1.saveToCls(constants_1.constants.parentContext, parentContext);
     return tracer.startSpan(name, {
         childOf: parentContext
     });

@@ -1,3 +1,4 @@
+import { getNamespace } from 'continuation-local-storage';
 import { Request, Response } from "express-serve-static-core";
 import { associateNMSWithReqBeforeGoingNext, saveToCls } from "./ClsManager";
 import { constants } from "./constants";
@@ -6,6 +7,7 @@ import { spanMaker } from "./span";
 import { setReqSpanData, setResSpanData } from "./spanDataSetter";
 import { initTracer } from './tracer';
 let { FORMAT_HTTP_HEADERS } = require('opentracing');
+let session = getNamespace(constants.clsNamespace);
 
 /**
  * @description this is the function that returns the main middleware 
@@ -24,21 +26,23 @@ export let jaegarTracerMiddleWare = function (serviceName: string, config?: Conf
      * @param next 
      */
     let middleware = (req: Request, res: Response, next: Function) => {
-        // saving the tracer in the cls after its initialization
-        saveToCls(constants.tracer, tracer);
+        session.run(() => {
+            // saving the tracer in the cls after its initialization
+            saveToCls(constants.tracer, tracer);
 
-        // extract the parent context from the tracer
-        let parentSpanContext = tracer.extract(FORMAT_HTTP_HEADERS, req.headers);
-        let mainReqSpan = spanMaker(req.path, parentSpanContext, tracer);
+            // extract the parent context from the tracer
+            let parentSpanContext = tracer.extract(FORMAT_HTTP_HEADERS, req.headers);
+            let mainReqSpan = spanMaker(req.path, parentSpanContext, tracer);
 
-        // setting span data on the request
-        setReqSpanData(req, res, mainReqSpan);
+            // setting span data on the request
+            setReqSpanData(req, res, mainReqSpan);
 
-        // setting span data on the response and ending the span when the response comes
-        let responseInterceptor = setResSpanData(req, res, mainReqSpan);
+            // setting span data on the response and ending the span when the response comes
+            let responseInterceptor = setResSpanData(req, res, mainReqSpan);
 
-        // calling the cls manager and after that running the response interceptor inside it 
-        associateNMSWithReqBeforeGoingNext(req, res, next, mainReqSpan, responseInterceptor);
+            // calling the cls manager and after that running the response interceptor inside it 
+            associateNMSWithReqBeforeGoingNext(req, res, next, mainReqSpan, responseInterceptor);
+        });
     };
 
     return middleware;

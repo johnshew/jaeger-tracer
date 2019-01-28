@@ -1,6 +1,6 @@
 import { Tracer } from "./interfaces/jaegar-tracer.interface";
 import { Config, Options } from "./interfaces/jaeger-client-config.interface";
-
+let mergeDeep = require('merge-deep');
 const { initTracer: initJaegerTracer } = require('jaeger-client');
 
 /**
@@ -24,7 +24,7 @@ const { initTracer: initJaegerTracer } = require('jaeger-client');
  */
 export let initTracer = (serviceName: string, config: Config = {}, options: Options = {}): Tracer => {
     // this is the configuration options 
-    config = {
+    config = mergeDeep({
         serviceName: serviceName,
         sampler: {
             type: "const",
@@ -33,22 +33,20 @@ export let initTracer = (serviceName: string, config: Config = {}, options: Opti
         reporter: {
             logSpans: true,
             agentHost: 'jaegar'
-        },
-        ...config
-    };
+        }
+    }, config);
 
     // options of the tracer
-    options = {
+    options = mergeDeep({
         logger: {
             info(msg: any) {
                 console.log("INFO ", msg);
             },
             error(msg: any) {
                 console.log("ERROR", msg);
-            },
-        },
-        ...options
-    };
+            }
+        }
+    }, options);
 
     // initialize the tracer
     let tracer = initJaegerTracer(config, options);

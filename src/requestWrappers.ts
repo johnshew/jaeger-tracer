@@ -3,15 +3,13 @@ import { constants } from "./constants";
 import { Tracer } from "./interfaces/jaegar-tracer.interface";
 import { Span } from "./interfaces/jaegaer-span.interface";
 const { FORMAT_HTTP_HEADERS } = require('opentracing');
-import { getNamespace } from 'continuation-local-storage';
-let session = getNamespace(constants.clsNamespace);
 
 /**
  * @description this is a function which will be used to inject headers in 
  * unirest request and it should be put on each unirest require statement
  * @param unirest 
  */
-export let unirestWrapper = (unirest: any) => {
+export let unirestWrapper = <T extends { [key: string]: any }>(unirest: T): T => {
     if (!unirest.request)
         throw Error('This is not a unirest object please provide a unirest object');
 
@@ -39,7 +37,7 @@ export let unirestWrapper = (unirest: any) => {
  * return a new request object that has injected headers by default embeded inside it 
  * @param request 
  */
-export let requestWrapper = (request: any) => {
+export let requestWrapper = <T extends { [key: string]: any }>(request: T): T => {
     if (!request.defaults)
         throw Error('This is not a request object please provide a request object');
 
@@ -58,15 +56,12 @@ export let requestWrapper = (request: any) => {
 /**
  * @description this function just get the injection headers to be put in the request
  */
-let getInjectHeaders = () => {
+export let getInjectHeaders = (): { 'uber-trace-id': string } => {
     // getting the main span from the cls 
-    // let tracer: any = getFromCls(constants.tracer);
-    // let span: any = getFromCls(constants.mainSpan);
+    let tracer: Tracer = getFromCls(constants.tracer);
+    let span: Span = getFromCls(constants.mainSpan);
 
-    let tracer = session.get(constants.mainSpan);
-    let span = session.get(constants.mainSpan);
-
-    let headers = {};
+    let headers: any = {};
 
     // setting the needed headers for injection of parent span
     tracer.inject(span, FORMAT_HTTP_HEADERS, headers);

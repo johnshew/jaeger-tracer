@@ -2,7 +2,7 @@ import { getContext as gc } from './ClsManager';
 import { initTracer as tracerFunc } from "./tracer";
 import { makeSpan as ms, makeSpanWithParent as msp, spanMaker as sm } from './span';
 import { jaegarTracerMiddleWare as jtm } from './middleware';
-import { requestWrapper as rw, unirestWrapper as uw } from './requestWrappers';
+import { requestWrapper as rw, unirestWrapper as uw, getInjectHeaders as gih } from './requestWrappers';
 
 
 /**
@@ -34,3 +34,4 @@ export let getContext = gc;
  */
 export let unirestWrapper = uw;
 export let requestWrapper = rw;
+export let getInjectionHeaders = gih;

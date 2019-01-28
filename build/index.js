@@ -13,4 +13,5 @@ exports.jaegarTracerMiddleware = middleware_1.jaegarTracerMiddleWare;
 exports.getContext = ClsManager_1.getContext;
 exports.unirestWrapper = requestWrappers_1.unirestWrapper;
 exports.requestWrapper = requestWrappers_1.requestWrapper;
+exports.getInjectionHeaders = requestWrappers_1.getInjectHeaders;
 //# sourceMappingURL=index.js.map

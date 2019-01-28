@@ -1,4 +1,4 @@
-import { getFromCls } from './ClsManager';
+import { getFromCls, saveToCls } from './ClsManager';
 import { constants } from "./constants";
 import { SpanContext } from "./interfaces/jaegaer-span.interface";
 import { Tracer } from "./interfaces/jaegar-tracer.interface";
@@ -14,6 +14,7 @@ export let spanMaker = (name: string, parentContext: SpanContext | null, tracer:
     if (!parentContext)
         return tracer.startSpan(name);
 
+    saveToCls(constants.parentContext, parentContext);
     // make the span with a parent context in any other case 
     return tracer.startSpan(name, {
         childOf: parentContext
@@ -27,7 +28,7 @@ export let spanMaker = (name: string, parentContext: SpanContext | null, tracer:
  */
 export let makeSpan = (name: string) => {
     // get tracer from the cls 
-    let tracer: any = getFromCls(constants.tracer);
+    let tracer: Tracer = getFromCls(constants.tracer);
 
     // getting the parent context from the cls 
     let parentContext: any = getFromCls(constants.parentContext);

@@ -1,4 +1,4 @@
-import { createNamespace, Namespace, getNamespace } from 'cls-hooked';
+import { createNamespace, Namespace, getNamespace } from 'continuation-local-storage';
 import { constants } from './constants';
 import { Span } from './interfaces/jaegaer-span.interface';
 let session = createNamespace(constants.clsNamespace);
@@ -10,7 +10,7 @@ let session = createNamespace(constants.clsNamespace);
  * @param res {Express.Response}
  * @param next {Function}
  */
-export let associateNMSWithReqBeforeGoingNext = session.bind(function (req: any, res: any, next: Function, mainSpan: Span, interceptorMiddleware: Function) {
+export let associateNMSWithReqBeforeGoingNext = function (req: any, res: any, next: Function, mainSpan: Span, interceptorMiddleware: Function) {
     // before rerouting just inputing binding the req , and res to the cls to 
     // be used later to the spans
     session.bindEmitter(req);
@@ -25,16 +25,16 @@ export let associateNMSWithReqBeforeGoingNext = session.bind(function (req: any,
     session.run(() => {
         interceptorMiddleware(req, res, next);
     });
-});
+}
 
-export let saveToCls = session.bind((key: string, value: any) => {
+export let saveToCls = (key: string, value: any) => {
     return session.set(key, value);
-});
+}
 
-export let getFromCls = session.bind((key: string) => {
+export let getFromCls = (key: string) => {
     return session.get(key);
-});
+}
 
-export let getContext = session.bind((): Namespace => {
+export let getContext = (): Namespace => {
     return session;
-});
+}
