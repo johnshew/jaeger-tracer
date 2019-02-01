@@ -6,6 +6,7 @@ import { Config, Options } from "./interfaces/jaeger-client-config.interface";
 import { spanMaker } from "./span";
 import { setReqSpanData, setResSpanData, putParentHeaderInOutgoingRequests } from "./spanDataSetter";
 import { initTracer } from './tracer';
+import { httpModules } from './interfaces/httpModules.interface';
 let { FORMAT_HTTP_HEADERS } = require('opentracing');
 let session = getNamespace(constants.clsNamespace);
 
@@ -13,7 +14,7 @@ let session = getNamespace(constants.clsNamespace);
  * @description this is the function that returns the main middleware 
  * @param serviceName 
  */
-export let jaegarTracerMiddleWare = function (http: any, serviceName: string, config?: Config, options?: Options) {
+export let jaegarTracerMiddleWare = function (httpModules: httpModules, serviceName: string, config?: Config, options?: Options) {
 
     // initiating the tracer outside the middleware so we dont have to initiate it everytime a request comes
     let tracer = initTracer(serviceName, config, options);
@@ -41,7 +42,7 @@ export let jaegarTracerMiddleWare = function (http: any, serviceName: string, co
             let responseInterceptor = setResSpanData(req, res, mainReqSpan);
 
             // monkey patch http and https modules to put the headers inside
-            putParentHeaderInOutgoingRequests(http, tracer, mainReqSpan);
+            putParentHeaderInOutgoingRequests(httpModules, tracer, mainReqSpan);
 
             // calling the cls manager and after that running the response interceptor inside it 
             associateNMSWithReqBeforeGoingNext(req, res, next, mainReqSpan, responseInterceptor);

@@ -6,6 +6,7 @@ import * as http from 'http';
 import * as https from 'https';
 import { Tracer } from "./interfaces/jaegar-tracer.interface";
 import { getInjectHeaders } from "./requestWrappers";
+import { httpModules } from "./interfaces/httpModules.interface";
 
 export let setReqSpanData = (req: Request, res: Response, span: Span) => {
     span.setTag(Tags.HTTP_URL, req.path);
@@ -64,10 +65,11 @@ export let setResSpanData = (req: Request, res: Response, span: Span): any => {
     return json(responseInterceptor, { mungError: true });
 }
 
-export let putParentHeaderInOutgoingRequests = (http: any, tracer: Tracer, span: Span) => {
+export let putParentHeaderInOutgoingRequests = ({ http, https }: httpModules, tracer: Tracer, span: Span) => {
     let headers = getInjectHeaders(tracer, span);
 
     let oldHttpRequest: any = http.request;
+    let oldHttpsRequest: any = https.request;
 
     let newRequestHttp = function (...args: any[]) {
         if (args[0] && args[0]['headers'])
@@ -76,5 +78,13 @@ export let putParentHeaderInOutgoingRequests = (http: any, tracer: Tracer, span:
         return oldHttpRequest(...args);
     }
 
+    let newRequestHttps = function (...args: any[]) {
+        if (args[0] && args[0]['headers'])
+            args[0]['headers'] = { ...args[0]['headers'] || {}, ...headers || {} };
+
+        return oldHttpsRequest(...args);
+    }
+
     http.request = newRequestHttp;
+    https.request = newRequestHttps;
 } 

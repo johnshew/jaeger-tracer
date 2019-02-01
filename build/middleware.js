@@ -8,7 +8,7 @@ var spanDataSetter_1 = require("./spanDataSetter");
 var tracer_1 = require("./tracer");
 var FORMAT_HTTP_HEADERS = require('opentracing').FORMAT_HTTP_HEADERS;
 var session = continuation_local_storage_1.getNamespace(constants_1.constants.clsNamespace);
-exports.jaegarTracerMiddleWare = function (http, serviceName, config, options) {
+exports.jaegarTracerMiddleWare = function (httpModules, serviceName, config, options) {
     var tracer = tracer_1.initTracer(serviceName, config, options);
     var middleware = function (req, res, next) {
         session.run(function () {
@@ -17,7 +17,7 @@ exports.jaegarTracerMiddleWare = function (http, serviceName, config, options) {
             var mainReqSpan = span_1.spanMaker(req.path, parentSpanContext, tracer);
             spanDataSetter_1.setReqSpanData(req, res, mainReqSpan);
             var responseInterceptor = spanDataSetter_1.setResSpanData(req, res, mainReqSpan);
-            spanDataSetter_1.putParentHeaderInOutgoingRequests(http, tracer, mainReqSpan);
+            spanDataSetter_1.putParentHeaderInOutgoingRequests(httpModules, tracer, mainReqSpan);
             ClsManager_1.associateNMSWithReqBeforeGoingNext(req, res, next, mainReqSpan, responseInterceptor);
         });
     };
