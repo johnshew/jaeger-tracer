@@ -28,7 +28,6 @@ export let jaegarTracerMiddleware = jtm;
  */
 export let getContext = gc;
 
-
 /**
  * exporting the wrappers
  */

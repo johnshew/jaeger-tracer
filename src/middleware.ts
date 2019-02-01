@@ -1,6 +1,6 @@
 import { getNamespace } from 'continuation-local-storage';
 import { Request, Response } from "express-serve-static-core";
-import { associateNMSWithReqBeforeGoingNext, saveToCls } from "./ClsManager";
+import { associateNMSWithReqBeforeGoingNext, saveToCls, getFromCls } from "./ClsManager";
 import { constants } from "./constants";
 import { Config, Options } from "./interfaces/jaeger-client-config.interface";
 import { spanMaker } from "./span";
@@ -13,7 +13,7 @@ let session = getNamespace(constants.clsNamespace);
  * @description this is the function that returns the main middleware 
  * @param serviceName 
  */
-export let jaegarTracerMiddleWare = function (serviceName: string, config?: Config, options?: Options) {
+export let jaegarTracerMiddleWare = function (http: any, serviceName: string, config?: Config, options?: Options) {
 
     // initiating the tracer outside the middleware so we dont have to initiate it everytime a request comes
     let tracer = initTracer(serviceName, config, options);
@@ -41,7 +41,7 @@ export let jaegarTracerMiddleWare = function (serviceName: string, config?: Conf
             let responseInterceptor = setResSpanData(req, res, mainReqSpan);
 
             // monkey patch http and https modules to put the headers inside
-            putParentHeaderInOutgoingRequests(tracer, mainReqSpan);
+            putParentHeaderInOutgoingRequests(http, tracer, mainReqSpan);
 
             // calling the cls manager and after that running the response interceptor inside it 
             associateNMSWithReqBeforeGoingNext(req, res, next, mainReqSpan, responseInterceptor);
