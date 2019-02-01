@@ -1,4 +1,4 @@
 export interface httpModules {
-    http: any;
-    https: any;
+    http?: any;
+    https?: any;
 }
