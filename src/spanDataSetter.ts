@@ -2,6 +2,10 @@ import { Request, Response } from "express";
 import { json } from 'express-mung';
 import { Span } from "./interfaces/jaegaer-span.interface";
 const { Tags } = require('opentracing');
+import * as http from 'http';
+import * as https from 'https';
+import { Tracer } from "./interfaces/jaegar-tracer.interface";
+import { getInjectHeaders } from "./requestWrappers";
 
 export let setReqSpanData = (req: Request, res: Response, span: Span) => {
     span.setTag(Tags.HTTP_URL, req.path);
@@ -20,13 +24,13 @@ export let setReqSpanData = (req: Request, res: Response, span: Span) => {
 export let setResSpanData = (req: Request, res: Response, span: Span): any => {
 
     // listening to the error 
-    res.once('error', function (this: Response, err: Error) {
+    res.once('error', function (this: Response | any, err: Error) {
         span.log({
             event: 'response',
             status: 'error',
             error: err,
-            headers: this.getHeaders(),
-            statusCode: this.statusCode
+            headers: this.getHeaders ? this.getHeaders() : this.headers || {},
+            statusCode: this.statusCode || 'no status found'
         });
         span.finish();
     });
@@ -35,13 +39,13 @@ export let setResSpanData = (req: Request, res: Response, span: Span): any => {
         event: 'response',
     };
 
-    res.once('finish', function (this: Response) {
+    res.once('finish', function (this: Response | any) {
         // just finishing the span in case the mung did not work
         span.log({
             ...responseSpanLog,
-            headers: this.getHeaders(),
-            statusCode: this.statusCode,
-            statusMessage: this.statusMessage
+            headers: this.getHeaders ? this.getHeaders() : this.headers || {},
+            statusCode: this.statusCode || 'no status found',
+            statusMessage: this.statusMessage || 'no message found'
         });
         span.finish();
     });
@@ -59,3 +63,29 @@ export let setResSpanData = (req: Request, res: Response, span: Span): any => {
 
     return json(responseInterceptor, { mungError: true });
 }
+
+export let putParentHeaderInOutgoingRequests = (tracer: Tracer, span: Span) => {
+    let headers = getInjectHeaders(tracer, span);
+    let httpModule: any = http;
+    let httpsModule: any = https;
+
+    let oldHttpRequest: any = httpModule.request;
+    let oldHttpsRequest: any = httpsModule.request;
+
+    let newRequestHttp = function (...args: any[]) {
+        if (args[0] && args[0]['headers'])
+            args[0]['headers'] = { ...args[0]['headers'], ...headers };
+
+        return oldHttpRequest(...args);
+    }
+
+    let newRequestHttps = function (...args: any[]) {
+        if (args[0] && args[0]['headers'])
+            args[0]['headers'] = { ...args[0]['headers'], ...headers };
+
+        return oldHttpsRequest(...args);
+    }
+
+    httpModule.request = newRequestHttp;
+    httpsModule.request = newRequestHttps;
+} 

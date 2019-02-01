@@ -56,10 +56,10 @@ export let requestWrapper = <T extends { [key: string]: any }>(request: T): T =>
 /**
  * @description this function just get the injection headers to be put in the request
  */
-export let getInjectHeaders = (): { 'uber-trace-id': string } => {
+export let getInjectHeaders = (tracerObject?: Tracer, spanObject?: Span): { 'uber-trace-id': string } => {
     // getting the main span from the cls 
-    let tracer: Tracer = getFromCls(constants.tracer);
-    let span: Span = getFromCls(constants.mainSpan);
+    let tracer: Tracer = tracerObject || getFromCls(constants.tracer);
+    let span: Span = spanObject || getFromCls(constants.mainSpan);
 
     let headers: any = {};
 

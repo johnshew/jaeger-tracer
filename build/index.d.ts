@@ -10,6 +10,6 @@ export declare let unirestWrapper: <T extends {
 export declare let requestWrapper: <T extends {
     [key: string]: any;
 }>(request: T) => T;
-export declare let getInjectionHeaders: () => {
+export declare let getInjectionHeaders: (tracerObject?: import("./interfaces/jaegar-tracer.interface").Tracer | undefined, spanObject?: import("./interfaces/jaegaer-span.interface").Span | undefined) => {
     'uber-trace-id': string;
 };

@@ -23,9 +23,9 @@ exports.requestWrapper = function (request) {
     });
     return baseRequest;
 };
-exports.getInjectHeaders = function () {
-    var tracer = ClsManager_1.getFromCls(constants_1.constants.tracer);
-    var span = ClsManager_1.getFromCls(constants_1.constants.mainSpan);
+exports.getInjectHeaders = function (tracerObject, spanObject) {
+    var tracer = tracerObject || ClsManager_1.getFromCls(constants_1.constants.tracer);
+    var span = spanObject || ClsManager_1.getFromCls(constants_1.constants.mainSpan);
     var headers = {};
     tracer.inject(span, FORMAT_HTTP_HEADERS, headers);
     return headers;

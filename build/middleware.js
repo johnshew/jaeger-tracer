@@ -17,6 +17,7 @@ exports.jaegarTracerMiddleWare = function (serviceName, config, options) {
             var mainReqSpan = span_1.spanMaker(req.path, parentSpanContext, tracer);
             spanDataSetter_1.setReqSpanData(req, res, mainReqSpan);
             var responseInterceptor = spanDataSetter_1.setResSpanData(req, res, mainReqSpan);
+            spanDataSetter_1.putParentHeaderInOutgoingRequests(tracer, mainReqSpan);
             ClsManager_1.associateNMSWithReqBeforeGoingNext(req, res, next, mainReqSpan, responseInterceptor);
         });
     };

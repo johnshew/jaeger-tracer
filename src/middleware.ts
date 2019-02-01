@@ -4,7 +4,7 @@ import { associateNMSWithReqBeforeGoingNext, saveToCls } from "./ClsManager";
 import { constants } from "./constants";
 import { Config, Options } from "./interfaces/jaeger-client-config.interface";
 import { spanMaker } from "./span";
-import { setReqSpanData, setResSpanData } from "./spanDataSetter";
+import { setReqSpanData, setResSpanData, putParentHeaderInOutgoingRequests } from "./spanDataSetter";
 import { initTracer } from './tracer';
 let { FORMAT_HTTP_HEADERS } = require('opentracing');
 let session = getNamespace(constants.clsNamespace);
@@ -39,6 +39,9 @@ export let jaegarTracerMiddleWare = function (serviceName: string, config?: Conf
 
             // setting span data on the response and ending the span when the response comes
             let responseInterceptor = setResSpanData(req, res, mainReqSpan);
+
+            // monkey patch http and https modules to put the headers inside
+            putParentHeaderInOutgoingRequests(tracer, mainReqSpan);
 
             // calling the cls manager and after that running the response interceptor inside it 
             associateNMSWithReqBeforeGoingNext(req, res, next, mainReqSpan, responseInterceptor);
