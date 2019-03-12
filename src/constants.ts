@@ -7,4 +7,6 @@ export class constants {
     static mainSpan = 'main-span';
     static tracer = 'tracer';
     static parentContext = 'parent-context';
+
+    static httpObjects: { http: any, https: any };
 }

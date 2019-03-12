@@ -10,11 +10,14 @@ import { Tracer } from "./interfaces/jaegar-tracer.interface";
  * @param tracer 
  */
 export let spanMaker = (name: string, parentContext: SpanContext | null, tracer: Tracer) => {
+    let span = null;
+
     // make a standalone span when no parent context came 
-    if (!parentContext)
+    if (!parentContext || (parentContext && !parentContext.spanId))
         return tracer.startSpan(name);
 
     saveToCls(constants.parentContext, parentContext);
+
     // make the span with a parent context in any other case 
     return tracer.startSpan(name, {
         childOf: parentContext
@@ -42,9 +45,6 @@ export let makeSpanWithParent = (name: string, parentContext: SpanContext) => {
     return spanMaker(name, parentContext, tracer);
 }
 
-/**
- * we need to make two functions
- * makeSpanWithParent which will take the parentContext,name and tracer by default
- * makeSpan which will just take the name and put the parent and tracer by default
- */
-
+export let getMainSpan = () => {
+    return getFromCls(constants.mainSpan);
+}

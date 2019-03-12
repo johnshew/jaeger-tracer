@@ -14,6 +14,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var express_mung_1 = require("express-mung");
 var Tags = require('opentracing').Tags;
 var requestWrappers_1 = require("./requestWrappers");
+var constants_1 = require("./constants");
 exports.setReqSpanData = function (req, res, span) {
     span.setTag(Tags.HTTP_URL, req.path);
     span.setTag(Tags.HTTP_METHOD, req.method);
@@ -51,30 +52,46 @@ exports.setResSpanData = function (req, res, span) {
     };
     return express_mung_1.json(responseInterceptor, { mungError: true });
 };
+var isHttpRequestSaverExecuted = false;
 exports.putParentHeaderInOutgoingRequests = function (_a, tracer, span) {
     var http = _a.http, https = _a.https;
     var headers = requestWrappers_1.getInjectHeaders(tracer, span);
-    var oldHttpRequest = http.request;
-    var oldHttpsRequest = https.request;
+    if (!isHttpRequestSaverExecuted) {
+        constants_1.constants.httpObjects = { http: http.request, https: https.request };
+        Object.freeze(constants_1.constants.httpObjects);
+        isHttpRequestSaverExecuted = true;
+    }
     var newRequestHttp = function () {
         var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             args[_i] = arguments[_i];
         }
-        if (args[0] && args[0]['headers'])
-            args[0]['headers'] = __assign({}, args[0]['headers'] || {}, headers || {});
-        return oldHttpRequest.apply(void 0, args);
+        var _a;
+        return (_a = constants_1.constants.httpObjects).http.apply(_a, manipulateRequestArgs(args, headers));
     };
     var newRequestHttps = function () {
         var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             args[_i] = arguments[_i];
         }
-        if (args[0] && args[0]['headers'])
-            args[0]['headers'] = __assign({}, args[0]['headers'] || {}, headers || {});
-        return oldHttpsRequest.apply(void 0, args);
+        var _a;
+        return (_a = constants_1.constants.httpObjects).https.apply(_a, manipulateRequestArgs(args, headers));
     };
     http.request = newRequestHttp;
     https.request = newRequestHttps;
 };
+function manipulateRequestArgs(args, newHeaders) {
+    var stdObject = args[2];
+    var isThisStdObject = typeof stdObject === 'object' && stdObject.stdObject;
+    if (isThisStdObject)
+        newHeaders = stdObject.headers;
+    if (!isThisStdObject) {
+        args[1] = theNothingFunction;
+        args[2] = { stdObject: true, headers: newHeaders };
+    }
+    if (args[0] && args[0]['headers'])
+        args[0]['headers'] = __assign({}, args[0]['headers'] || {}, newHeaders || {});
+    return args;
+}
+var theNothingFunction = function () { return null; };
 //# sourceMappingURL=spanDataSetter.js.map

@@ -37,7 +37,7 @@ This is the simplest usage of package you can customize the collector host and m
 Inside the package we just log the incoming requests and their responses from this backend 
 the middleware takes the http or https to be able to monkey patch the http.request or https.request functions and put the tracer headers in any outgoing requests to third party backends. Also the it extracts the headers from any incoming requests to relate spans with the parent child relations. basically everything from extracting and injecting the headers happens inside. 
 
-### Imporatant notes
+### Important notes
 The package inside use the [continuation-local-storage](https://www.npmjs.com/package/continuation-local-storage) so , be careful to lose the context
 also there is a function which gets you the context to be able to pass it over if its lost in some place in your code.
 
