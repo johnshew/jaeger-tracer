@@ -1,6 +1,6 @@
 {
   "name": "jaeger-tracer",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "description": "client library for jaegar to ease out the instrumenting in express and any other backend application based on express in nodejs",
   "main": "build/index.js",
   "types": "build/index.d.ts",
