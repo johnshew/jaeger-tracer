@@ -28,4 +28,5 @@ export interface Options {
     tags?: any;
     metrics?: any;
     logger?: any;
+    filterData?: (data: any) => any;
 }

@@ -24,7 +24,7 @@ export let setReqSpanData = (req: Request, res: Response, span: Span) => {
     return span;
 }
 
-export let setResSpanData = (req: Request, res: Response, span: Span): any => {
+export let setResSpanData = (req: Request, res: Response, span: Span, filterFunction: any): any => {
 
     // listening to the error 
     res.once('error', function (this: Response | any, err: Error) {
@@ -44,12 +44,15 @@ export let setResSpanData = (req: Request, res: Response, span: Span): any => {
 
     res.once('finish', function (this: Response | any) {
         // just finishing the span in case the mung did not work
-        span.log({
-            ...responseSpanLog,
-            headers: this.getHeaders ? this.getHeaders() : this.headers || {},
-            statusCode: this.statusCode || 'no status found',
-            statusMessage: this.statusMessage || 'no message found'
-        });
+        span.log(
+            // applying the filter function which the user usually provide
+            applyDataFilter(filterFunction, {
+                ...responseSpanLog,
+                headers: this.getHeaders ? this.getHeaders() : this.headers || {},
+                statusCode: this.statusCode || 'no status found',
+                statusMessage: this.statusMessage || 'no message found'
+            })
+        );
         span.finish();
     });
 
@@ -70,6 +73,13 @@ export let setResSpanData = (req: Request, res: Response, span: Span): any => {
 // a flag to save that saving the original http requests function is saved
 let isHttpRequestSaverExecuted = false;
 
+/**
+ * @description this is the function which override the actual http.request and https.request
+ * to put the tracer headers in the request
+ * @param param0 
+ * @param tracer 
+ * @param span 
+ */
 export let putParentHeaderInOutgoingRequests = ({ http, https }: httpModules, tracer: Tracer, span: Span) => {
     let headers = getInjectHeaders(tracer, span);
 
@@ -131,4 +141,24 @@ function manipulateRequestArgs(args: any[], newHeaders: any) {
     return args;
 }
 
+/**
+ * @description just an empty function used for passing function purposes
+ */
 let theNothingFunction = () => null;
+
+/**
+ * @description this is a function which apply filters on the logged data before they are logged
+ */
+async function applyDataFilter(filterFunction: Function, data: any) {
+    if (!filterFunction)
+        return data;
+
+    // calling the data filter function
+    let result = filterFunction(data);
+
+    // if it returned a promise await it
+    if (result.then)
+        return await result;
+
+    return result;
+}

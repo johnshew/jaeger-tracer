@@ -51,4 +51,11 @@ export interface Options {
     tags?: any;
     metrics?: any;
     logger?: any;
+
+    /**
+     * @description this is a function which will be applied on the data before they 
+     * are put into log 
+     * @returns has to return the data to be logged or else it will log nothing
+     */
+    filterData?: (data: any) => any;
 }

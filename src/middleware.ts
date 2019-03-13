@@ -32,7 +32,6 @@ export let jaegarTracerMiddleWare = function (httpModules: httpModules, serviceN
      */
     let middleware = (req: Request, res: Response, next: Function) => {
         session.run(() => {
-
             // saving the tracer in the cls after its initialization
             saveToCls(constants.tracer, tracer);
 
@@ -44,7 +43,7 @@ export let jaegarTracerMiddleWare = function (httpModules: httpModules, serviceN
             setReqSpanData(req, res, mainReqSpan);
 
             // setting span data on the response and ending the span when the response comes
-            let responseInterceptor = setResSpanData(req, res, mainReqSpan);
+            let responseInterceptor = setResSpanData(req, res, mainReqSpan, options.filterData);
 
             // monkey patch http and https modules to put the headers inside
             putParentHeaderInOutgoingRequests(httpModules, tracer, mainReqSpan);
