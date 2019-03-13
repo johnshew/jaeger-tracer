@@ -9,6 +9,10 @@ var tracer_1 = require("./tracer");
 var FORMAT_HTTP_HEADERS = require('opentracing').FORMAT_HTTP_HEADERS;
 var session = continuation_local_storage_1.getNamespace(constants_1.constants.clsNamespace);
 exports.jaegarTracerMiddleWare = function (httpModules, serviceName, config, options) {
+    if (config === void 0) { config = {}; }
+    if (options === void 0) { options = {}; }
+    if (!shouldTrace(config.shouldTrace))
+        return function (req, res, next) { return next(); };
     var tracer = tracer_1.initTracer(serviceName, config, options);
     var middleware = function (req, res, next) {
         session.run(function () {
@@ -23,4 +27,16 @@ exports.jaegarTracerMiddleWare = function (httpModules, serviceName, config, opt
     };
     return middleware;
 };
+function shouldTrace(isTraceWorking) {
+    if (isTraceWorking === undefined)
+        return true;
+    var type = typeof isTraceWorking;
+    if (type === 'boolean') {
+        return isTraceWorking;
+    }
+    if (type === 'function') {
+        return isTraceWorking();
+    }
+    throw Error("shouldTrace value should of type \"boolean\" or \"function\" that returns a boolean");
+}
 //# sourceMappingURL=middleware.js.map

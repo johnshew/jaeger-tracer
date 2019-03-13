@@ -22,6 +22,7 @@ export interface Config {
         port?: number;
         refreshIntervalMs?: number;
     };
+    shouldTrace?: () => Boolean | Boolean;
 }
 export interface Options {
     tags?: any;

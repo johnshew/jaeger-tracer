@@ -37,7 +37,14 @@ export interface Config {
         host?: string;
         port?: number;
         refreshIntervalMs?: number;
-    }
+    },
+
+    /**
+     * @description this is a property to control if the tracer should work or not
+     * usually used to stop tracing in production systems
+     */
+    shouldTrace?: () => Boolean | Boolean;
+
 };
 
 export interface Options {

@@ -14,7 +14,11 @@ let session = getNamespace(constants.clsNamespace);
  * @description this is the function that returns the main middleware 
  * @param serviceName 
  */
-export let jaegarTracerMiddleWare = function (httpModules: httpModules, serviceName: string, config?: Config, options?: Options) {
+export let jaegarTracerMiddleWare = function (httpModules: httpModules, serviceName: string, config: Config = {}, options: Options = {}) {
+
+    // if we should not trace then just return an empty middleware
+    if (!shouldTrace(config.shouldTrace))
+        return (req: any, res: any, next: Function) => next();
 
     // initiating the tracer outside the middleware so we dont have to initiate it everytime a request comes
     let tracer = initTracer(serviceName, config, options);
@@ -28,6 +32,7 @@ export let jaegarTracerMiddleWare = function (httpModules: httpModules, serviceN
      */
     let middleware = (req: Request, res: Response, next: Function) => {
         session.run(() => {
+
             // saving the tracer in the cls after its initialization
             saveToCls(constants.tracer, tracer);
 
@@ -50,6 +55,25 @@ export let jaegarTracerMiddleWare = function (httpModules: httpModules, serviceN
     };
 
     return middleware;
+}
+
+
+function shouldTrace(isTraceWorking?: () => Boolean | Boolean) {
+    // by default we should trace
+    if (isTraceWorking === undefined)
+        return true;
+
+    let type = typeof isTraceWorking;
+
+    if (type === 'boolean') {
+        return isTraceWorking;
+    }
+
+    if (type === 'function') {
+        return isTraceWorking();
+    }
+
+    throw Error(`shouldTrace value should of type "boolean" or "function" that returns a boolean`);
 }
 
 
