@@ -49,7 +49,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var opentracing_1 = require("opentracing");
 var requestWrappers_1 = require("./requestWrappers");
 var constants_1 = require("./constants");
-var mung = require('mung');
+var mung = require('express-mung');
 exports.setReqSpanData = function (req, res, span) {
     span.setTag(opentracing_1.Tags.HTTP_URL, req.path());
     span.setTag(opentracing_1.Tags.HTTP_METHOD, req.method);

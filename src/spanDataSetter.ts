@@ -8,7 +8,7 @@ import { getInjectHeaders } from "./requestWrappers";
 import { httpModules } from "./interfaces/httpModules.interface";
 import { HttpPasserObject } from "./interfaces/HttpPasserObject";
 import { constants } from "./constants";
-let mung = require('mung');
+let mung = require('express-mung');
 
 export let setReqSpanData = (req: Request, res: Response, span: Span) => {
     span.setTag(Tags.HTTP_URL, req.path());
