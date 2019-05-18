@@ -46,14 +46,14 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var express_mung_1 = require("express-mung");
-var Tags = require('opentracing').Tags;
+var opentracing_1 = require("opentracing");
 var requestWrappers_1 = require("./requestWrappers");
 var constants_1 = require("./constants");
+var mung = require('mung');
 exports.setReqSpanData = function (req, res, span) {
-    span.setTag(Tags.HTTP_URL, req.path);
-    span.setTag(Tags.HTTP_METHOD, req.method);
-    span.setTag('Hostname', req.hostname);
+    span.setTag(opentracing_1.Tags.HTTP_URL, req.path());
+    span.setTag(opentracing_1.Tags.HTTP_METHOD, req.method);
+    span.setTag('Hostname', req.headers.host);
     span.log({
         event: 'request',
         body: req.body,
@@ -85,7 +85,7 @@ exports.setResSpanData = function (req, res, span, filterFunction) {
         responseSpanLog = __assign({}, responseSpanLog, { status: 'normal', body: body });
         return body;
     };
-    return express_mung_1.json(responseInterceptor, { mungError: true });
+    return mung.json(responseInterceptor);
 };
 var isHttpRequestSaverExecuted = false;
 exports.putParentHeaderInOutgoingRequests = function (_a, tracer, span) {
@@ -97,19 +97,19 @@ exports.putParentHeaderInOutgoingRequests = function (_a, tracer, span) {
         isHttpRequestSaverExecuted = true;
     }
     var newRequestHttp = function () {
+        var _a;
         var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             args[_i] = arguments[_i];
         }
-        var _a;
         return (_a = constants_1.constants.httpObjects).http.apply(_a, manipulateRequestArgs(args, headers));
     };
     var newRequestHttps = function () {
+        var _a;
         var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             args[_i] = arguments[_i];
         }
-        var _a;
         return (_a = constants_1.constants.httpObjects).https.apply(_a, manipulateRequestArgs(args, headers));
     };
     http.request = newRequestHttp;

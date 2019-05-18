@@ -17,7 +17,7 @@
     "instrument",
     "instrumenting",
     "opentracing",
-    "express",
+    "restify",
     "nodejs",
     "node js",
     "node",
@@ -38,8 +38,8 @@
   },
   "devDependencies": {
     "@types/continuation-local-storage": "^3.2.1",
-    "@types/express": "^4.16.0",
-    "@types/express-mung": "^0.5.0",
-    "@types/node": "^10.12.18"
+    "@types/node": "^10.12.18",
+    "@types/restify": "^7.2.10",
+    "typescript": "^3.4.5"
   }
 }

@@ -1,5 +1,5 @@
 import { getNamespace } from 'continuation-local-storage';
-import { Request, Response } from "express-serve-static-core";
+import { Request, Response, Next, RequestHandler } from "restify";
 import { associateNMSWithReqBeforeGoingNext, saveToCls, getFromCls } from "./ClsManager";
 import { constants } from "./constants";
 import { Config, Options } from "./interfaces/jaeger-client-config.interface";
@@ -7,7 +7,8 @@ import { spanMaker } from "./span";
 import { setReqSpanData, setResSpanData, putParentHeaderInOutgoingRequests } from "./spanDataSetter";
 import { initTracer } from './tracer';
 import { httpModules } from './interfaces/httpModules.interface';
-let { FORMAT_HTTP_HEADERS } = require('opentracing');
+import { FORMAT_HTTP_HEADERS } from 'opentracing';
+
 let session = getNamespace(constants.clsNamespace);
 
 /**
@@ -30,14 +31,14 @@ export let jaegarTracerMiddleWare = function (httpModules: httpModules, serviceN
      * @param res 
      * @param next 
      */
-    let middleware = (req: Request, res: Response, next: Function) => {
+    let middleware = (req: Request, res: Response, next: Next) => {
         session.run(() => {
             // saving the tracer in the cls after its initialization
             saveToCls(constants.tracer, tracer);
 
             // extract the parent context from the tracer
             let parentSpanContext = tracer.extract(FORMAT_HTTP_HEADERS, req.headers);
-            let mainReqSpan = spanMaker(req.path, parentSpanContext, tracer);
+            let mainReqSpan = spanMaker(req.path(), parentSpanContext, tracer);
 
             // setting span data on the request
             setReqSpanData(req, res, mainReqSpan);

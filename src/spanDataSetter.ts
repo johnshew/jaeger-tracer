@@ -1,7 +1,6 @@
-import { Request, Response } from "express";
-import { json } from 'express-mung';
+import { Request, Response, RequestHandler } from "restify";
 import { Span } from "./interfaces/jaegaer-span.interface";
-const { Tags } = require('opentracing');
+import { Tags } from 'opentracing';
 import * as http from 'http';
 import * as https from 'https';
 import { Tracer } from "./interfaces/jaegar-tracer.interface";
@@ -9,11 +8,12 @@ import { getInjectHeaders } from "./requestWrappers";
 import { httpModules } from "./interfaces/httpModules.interface";
 import { HttpPasserObject } from "./interfaces/HttpPasserObject";
 import { constants } from "./constants";
+let mung = require('mung');
 
 export let setReqSpanData = (req: Request, res: Response, span: Span) => {
-    span.setTag(Tags.HTTP_URL, req.path);
+    span.setTag(Tags.HTTP_URL, req.path());
     span.setTag(Tags.HTTP_METHOD, req.method);
-    span.setTag('Hostname', req.hostname);
+    span.setTag('Hostname', req.headers.host);
     span.log({
         event: 'request',
         body: req.body,
@@ -24,10 +24,10 @@ export let setReqSpanData = (req: Request, res: Response, span: Span) => {
     return span;
 }
 
-export let setResSpanData = (req: Request, res: Response, span: Span, filterFunction: any): any => {
+export let setResSpanData = (req: Request, res: Response, span: Span, filterFunction: any): RequestHandler => {
 
     // listening to the error 
-    res.once('error', function (this: Response | any, err: Error) {
+    res.once('error', function (this: Response, err: Error) {
         span.log({
             event: 'response',
             status: 'error',
@@ -42,7 +42,7 @@ export let setResSpanData = (req: Request, res: Response, span: Span, filterFunc
         event: 'response',
     };
 
-    res.once('finish', function (this: Response | any) {
+    res.once('finish', function (this: Response) {
         // just finishing the span in case the mung did not work
         span.log(
             // applying the filter function which the user usually provide
@@ -67,7 +67,7 @@ export let setResSpanData = (req: Request, res: Response, span: Span, filterFunc
         return body;
     }
 
-    return json(responseInterceptor, { mungError: true });
+    return mung.json(responseInterceptor);
 }
 
 // a flag to save that saving the original http requests function is saved

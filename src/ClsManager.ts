@@ -1,6 +1,8 @@
 import { createNamespace, Namespace, getNamespace } from 'continuation-local-storage';
 import { constants } from './constants';
 import { Span } from './interfaces/jaegaer-span.interface';
+import { Request, Response, Next, RequestHandler } from 'restify';
+
 let session = createNamespace(constants.clsNamespace);
 
 /**
@@ -10,7 +12,7 @@ let session = createNamespace(constants.clsNamespace);
  * @param res {Express.Response}
  * @param next {Function}
  */
-export let associateNMSWithReqBeforeGoingNext = function (req: any, res: any, next: Function, mainSpan: Span, interceptorMiddleware: Function) {
+export let associateNMSWithReqBeforeGoingNext = function (req: Request, res: Response, next: Next, mainSpan: Span, interceptorMiddleware: RequestHandler) {
     // before rerouting just inputing binding the req , and res to the cls to 
     // be used later to the spans
     session.bindEmitter(req);
