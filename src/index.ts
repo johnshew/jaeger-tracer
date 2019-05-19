@@ -1,7 +1,7 @@
 import { getContext as gc } from './ClsManager';
 import { initTracer as tracerFunc } from "./tracer";
 import { makeSpan as ms, makeSpanWithParent as msp, spanMaker as sm } from './span';
-import { jaegarTracerMiddleWare as jtm } from './middleware';
+import { jaegarTracerMiddleWare as jtm, tracer as jtmTracer } from './middleware';
 import { requestWrapper as rw, unirestWrapper as uw, getInjectHeaders as gih } from './requestWrappers';
 
 
@@ -21,7 +21,7 @@ export let spanMaker = sm;
  * exporting the jaegar tracer middleware
  */
 export let jaegarTracerMiddleware = jtm;
-
+export let middlewareTracer = jtmTracer;
 
 /**
  * exporting the cls context

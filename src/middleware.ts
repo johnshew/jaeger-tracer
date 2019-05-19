@@ -5,11 +5,12 @@ import { constants } from "./constants";
 import { Config, Options } from "./interfaces/jaeger-client-config.interface";
 import { spanMaker } from "./span";
 import { setReqSpanData, setResSpanData, putParentHeaderInOutgoingRequests } from "./spanDataSetter";
-import { initTracer } from './tracer';
+import { initTracer, Tracer } from './tracer';
 import { httpModules } from './interfaces/httpModules.interface';
 import { FORMAT_HTTP_HEADERS } from 'opentracing';
 
-let session = getNamespace(constants.clsNamespace);
+export const session = getNamespace(constants.clsNamespace);
+export var tracer : Tracer;
 
 /**
  * @description this is the function that returns the main middleware 
@@ -22,7 +23,7 @@ export let jaegarTracerMiddleWare = function (httpModules: httpModules, serviceN
         return (req: any, res: any, next: Function) => next();
 
     // initiating the tracer outside the middleware so we dont have to initiate it everytime a request comes
-    let tracer = initTracer(serviceName, config, options);
+    tracer = initTracer(serviceName, config, options);
 
     /**
      * @description this is an express middleware to be used to instrument an application 

@@ -1,4 +1,5 @@
 import { Tracer } from "./interfaces/jaegar-tracer.interface";
+export { Tracer } from "./interfaces/jaegar-tracer.interface";
 import { Config, Options } from "./interfaces/jaeger-client-config.interface";
 let mergeDeep = require('merge-deep');
 const { initTracer: initJaegerTracer } = require('jaeger-client');
