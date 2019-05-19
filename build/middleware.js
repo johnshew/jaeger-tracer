@@ -7,21 +7,21 @@ var span_1 = require("./span");
 var spanDataSetter_1 = require("./spanDataSetter");
 var tracer_1 = require("./tracer");
 var opentracing_1 = require("opentracing");
-var session = continuation_local_storage_1.getNamespace(constants_1.constants.clsNamespace);
+exports.session = continuation_local_storage_1.getNamespace(constants_1.constants.clsNamespace);
 exports.jaegarTracerMiddleWare = function (httpModules, serviceName, config, options) {
     if (config === void 0) { config = {}; }
     if (options === void 0) { options = {}; }
     if (!shouldTrace(config.shouldTrace))
         return function (req, res, next) { return next(); };
-    var tracer = tracer_1.initTracer(serviceName, config, options);
+    exports.tracer = tracer_1.initTracer(serviceName, config, options);
     var middleware = function (req, res, next) {
-        session.run(function () {
-            ClsManager_1.saveToCls(constants_1.constants.tracer, tracer);
-            var parentSpanContext = tracer.extract(opentracing_1.FORMAT_HTTP_HEADERS, req.headers);
-            var mainReqSpan = span_1.spanMaker(req.path(), parentSpanContext, tracer);
+        exports.session.run(function () {
+            ClsManager_1.saveToCls(constants_1.constants.tracer, exports.tracer);
+            var parentSpanContext = exports.tracer.extract(opentracing_1.FORMAT_HTTP_HEADERS, req.headers);
+            var mainReqSpan = span_1.spanMaker(req.path(), parentSpanContext, exports.tracer);
             spanDataSetter_1.setReqSpanData(req, res, mainReqSpan);
             var responseInterceptor = spanDataSetter_1.setResSpanData(req, res, mainReqSpan, options.filterData);
-            spanDataSetter_1.putParentHeaderInOutgoingRequests(httpModules, tracer, mainReqSpan);
+            spanDataSetter_1.putParentHeaderInOutgoingRequests(httpModules, exports.tracer, mainReqSpan);
             ClsManager_1.associateNMSWithReqBeforeGoingNext(req, res, next, mainReqSpan, responseInterceptor);
         });
     };

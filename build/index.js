@@ -10,6 +10,7 @@ exports.makeSpan = span_1.makeSpan;
 exports.makeSpanWithParent = span_1.makeSpanWithParent;
 exports.spanMaker = span_1.spanMaker;
 exports.jaegarTracerMiddleware = middleware_1.jaegarTracerMiddleWare;
+exports.middlewareTracer = middleware_1.tracer;
 exports.getContext = ClsManager_1.getContext;
 exports.unirestWrapper = requestWrappers_1.unirestWrapper;
 exports.requestWrapper = requestWrappers_1.requestWrapper;
