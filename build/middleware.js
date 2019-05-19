@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var continuation_local_storage_1 = require("continuation-local-storage");
-var ClsManager_1 = require("./ClsManager");
+var clsManager_1 = require("./clsManager");
 var constants_1 = require("./constants");
 var span_1 = require("./span");
 var spanDataSetter_1 = require("./spanDataSetter");
@@ -16,13 +16,13 @@ exports.jaegarTracerMiddleWare = function (httpModules, serviceName, config, opt
     exports.tracer = tracer_1.initTracer(serviceName, config, options);
     var middleware = function (req, res, next) {
         exports.session.run(function () {
-            ClsManager_1.saveToCls(constants_1.constants.tracer, exports.tracer);
+            clsManager_1.saveToCls(constants_1.constants.tracer, exports.tracer);
             var parentSpanContext = exports.tracer.extract(opentracing_1.FORMAT_HTTP_HEADERS, req.headers);
-            var mainReqSpan = span_1.spanMaker(req.path(), parentSpanContext, exports.tracer);
+            var mainReqSpan = span_1.spanStart(req.path(), parentSpanContext, exports.tracer);
             spanDataSetter_1.setReqSpanData(req, res, mainReqSpan);
             var responseInterceptor = spanDataSetter_1.setResSpanData(req, res, mainReqSpan, options.filterData);
             spanDataSetter_1.putParentHeaderInOutgoingRequests(httpModules, exports.tracer, mainReqSpan);
-            ClsManager_1.associateNMSWithReqBeforeGoingNext(req, res, next, mainReqSpan, responseInterceptor);
+            clsManager_1.associateNMSWithReqBeforeGoingNext(req, res, next, mainReqSpan, responseInterceptor);
         });
     };
     return middleware;

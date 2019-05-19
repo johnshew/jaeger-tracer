@@ -1,16 +1,16 @@
 import { getNamespace } from 'continuation-local-storage';
 import { Request, Response, Next, RequestHandler } from "restify";
-import { associateNMSWithReqBeforeGoingNext, saveToCls, getFromCls } from "./ClsManager";
+import { associateNMSWithReqBeforeGoingNext, saveToCls, getFromCls } from "./clsManager";
 import { constants } from "./constants";
 import { Config, Options } from "./interfaces/jaeger-client-config.interface";
-import { spanMaker } from "./span";
+import { spanStart } from "./span";
 import { setReqSpanData, setResSpanData, putParentHeaderInOutgoingRequests } from "./spanDataSetter";
 import { initTracer, Tracer } from './tracer';
 import { httpModules } from './interfaces/httpModules.interface';
 import { FORMAT_HTTP_HEADERS } from 'opentracing';
 
 export const session = getNamespace(constants.clsNamespace);
-export var tracer : Tracer;
+export var tracer: Tracer;
 
 /**
  * @description this is the function that returns the main middleware 
@@ -23,13 +23,13 @@ export let jaegarTracerMiddleWare = function (httpModules: httpModules, serviceN
         return (req: any, res: any, next: Function) => next();
 
     // initiating the tracer outside the middleware so we dont have to initiate it everytime a request comes
-    tracer = initTracer(serviceName, config, options);
+    tracer = initTracer(serviceName, config, options)
 
     /**
      * @description this is an express middleware to be used to instrument an application 
      * requests and responses 
      * @param req 
-     * @param res 
+     * @param res
      * @param next 
      */
     let middleware = (req: Request, res: Response, next: Next) => {
@@ -39,7 +39,7 @@ export let jaegarTracerMiddleWare = function (httpModules: httpModules, serviceN
 
             // extract the parent context from the tracer
             let parentSpanContext = tracer.extract(FORMAT_HTTP_HEADERS, req.headers);
-            let mainReqSpan = spanMaker(req.path(), parentSpanContext, tracer);
+            let mainReqSpan = spanStart(req.path(), parentSpanContext, tracer);
 
             // setting span data on the request
             setReqSpanData(req, res, mainReqSpan);

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var ClsManager_1 = require("./ClsManager");
+var clsManager_1 = require("./clsManager");
 var constants_1 = require("./constants");
 var FORMAT_HTTP_HEADERS = require('opentracing').FORMAT_HTTP_HEADERS;
 exports.unirestWrapper = function (unirest) {
@@ -24,8 +24,8 @@ exports.requestWrapper = function (request) {
     return baseRequest;
 };
 exports.getInjectHeaders = function (tracerObject, spanObject) {
-    var tracer = tracerObject || ClsManager_1.getFromCls(constants_1.constants.tracer);
-    var span = spanObject || ClsManager_1.getFromCls(constants_1.constants.mainSpan);
+    var tracer = tracerObject || clsManager_1.getFromCls(constants_1.constants.tracer);
+    var span = spanObject || clsManager_1.getFromCls(constants_1.constants.mainSpan);
     var headers = {};
     tracer.inject(span, FORMAT_HTTP_HEADERS, headers);
     return headers;

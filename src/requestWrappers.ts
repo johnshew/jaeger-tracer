@@ -1,4 +1,4 @@
-import { getFromCls } from "./ClsManager";
+import { getFromCls } from "./clsManager";
 import { constants } from "./constants";
 import { Tracer } from "./interfaces/jaegar-tracer.interface";
 import { Span } from "./interfaces/jaegaer-span.interface";
