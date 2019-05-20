@@ -1,4 +1,4 @@
-# Jaeger-tracer
+# jaeger-tracer-restify
 This is a module for jaeger instrumentation to allow your node backend with just four lines of code and the require statements included to be able to send the incoming and outgoing requests and responses data to the jaeger backend.
 
 This is a fork of `jaeger-tracer`.
