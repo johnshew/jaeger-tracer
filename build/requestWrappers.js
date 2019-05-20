@@ -27,7 +27,7 @@ exports.getInjectHeaders = function (tracerObject, spanObject) {
     var tracer = tracerObject || clsManager_1.getFromCls(constants_1.constants.tracer);
     var span = spanObject || clsManager_1.getFromCls(constants_1.constants.mainSpan);
     var headers = {};
-    tracer.inject(span, FORMAT_HTTP_HEADERS, headers);
+    tracer && span && tracer.inject(span, FORMAT_HTTP_HEADERS, headers);
     return headers;
 };
 //# sourceMappingURL=requestWrappers.js.map

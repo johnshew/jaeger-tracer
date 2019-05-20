@@ -64,7 +64,7 @@ export let getInjectHeaders = (tracerObject?: Tracer, spanObject?: Span): { 'ube
     let headers: any = {};
 
     // setting the needed headers for injection of parent span
-    tracer.inject(span, FORMAT_HTTP_HEADERS, headers);
+    tracer && span && tracer.inject(span, FORMAT_HTTP_HEADERS, headers);
 
     return headers;
 }
