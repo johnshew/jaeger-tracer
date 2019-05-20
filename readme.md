@@ -15,7 +15,7 @@ This is a fork of `jaeger-tracer`.
 ## Usage
 All you need to do is include the following middleware in your app with the following way
 ```javascript
-let { jaegarTracerMiddleware } = require('jaeger-tracer');
+let { jaegarTracerMiddleware } = require('jaeger-tracer-restify');
 let http = require('http');
 let https = require('https');
 
@@ -24,10 +24,10 @@ let https = require('https');
 // body parser middleware
 
 // jaeger tracer middleware here
-app.use(jaegarTracerMiddleware({ http, https }, '<app name here>', {
+app.use(jaegarTracerMiddleware({ http, https }, 'your-app', {
 	reporter: {
 	    // host name of your 
-		agentHost:  'jaegar'
+		agentHost:  'localhost'
 	}
 }
 ));
