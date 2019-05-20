@@ -32,25 +32,24 @@ app.use(jaegarTracerMiddleware({ http, https }, 'your-app', {
 }
 ));
 ```
-This is the simplest usage of package you can customize the collector host and many other data through the configs which we will be describing later.
+This is the simplest usage of the package. You can customize the collector host and many other data through the configs.
 
 ----------------
 ## How the package works
-Inside the package we just log the incoming requests and their responses from this backend 
-the middleware takes the http or https to be able to monkey patch the http.request or https.request functions and put the tracer headers in any outgoing requests to third party backends. Also the it extracts the headers from any incoming requests to relate spans with the parent child relations. basically everything from extracting and injecting the headers happens inside. 
+Inside the package we just log the incoming requests and their responses from this backend. 
+the middleware takes the http or https to be able to monkey patch the http.request or https.request functions and put the tracer headers in any outgoing requests to third party backends. Also the it extracts the headers from any incoming requests to relate spans with the parent child relations. It provides the basics for extracting and injecting the headers across requests.
 
 ### Important notes
-The package inside use the [continuation-local-storage](https://www.npmjs.com/package/continuation-local-storage) so , be careful to lose the context
-also there is a function which gets you the context to be able to pass it over if its lost in some place in your code.
+The package inside use the [continuation-local-storage](https://www.npmjs.com/package/continuation-local-storage), so be careful to lose the context.
+Also there is a function which gets you the context to be able to pass it over if it is lost in some place in your code.
 
 ## API Reference
 The package exports the following functions to give you full control and flexibility below we will list the function telling what is the usage of each one and what do they do.
 
 #### jaegarTracerMiddleware
 #### initTracer
-#### makeSpan
-#### makeSpanWithParent
-#### spanMaker
+#### startSpan
+#### startSpanFromContext
 #### getContext
 #### unirestWrapper
 #### requestWrapper
