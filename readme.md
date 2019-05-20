@@ -1,8 +1,10 @@
 # Jaeger-tracer
 This is a module for jaeger instrumentation to allow your node backend with just four lines of code and the require statements included to be able to send the incoming and outgoing requests and responses data to the jaeger backend.
 
-[![npm version](https://badge.fury.io/js/jaeger-tracer.svg)](https://badge.fury.io/js/jaeger-tracer)
-[![Dependency Status](https://david-dm.org/abdoolly/jaeger-tracer.svg)](https://david-dm.org/abdoolly/jaeger-tracer.svg)
+This is a fork of `jaeger-tracer`.
+
+[![npm version](https://badge.fury.io/js/jaeger-tracer-restify.svg)](https://badge.fury.io/js/jaeger-tracer-restify)
+[![Dependency Status](https://david-dm.org/johnshew/jaeger-tracer-restify.svg)](https://david-dm.org/johnshew/jaeger-tracer-restify.svg)
 
 ## Table of contents
 
@@ -12,7 +14,7 @@ This is a module for jaeger instrumentation to allow your node backend with just
 
 ## Usage
 All you need to do is include the following middleware in your app with the following way
-```
+```javascript
 let { jaegarTracerMiddleware } = require('jaeger-tracer');
 let http = require('http');
 let https = require('https');

@@ -1,6 +1,6 @@
 {
   "name": "jaeger-tracer-restify",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "helpers for jeager with restify",
   "main": "build/index.js",
   "types": "build/index.d.ts",
