@@ -5,6 +5,7 @@ This is a fork of `jaeger-tracer`.
 
 [![npm version](https://badge.fury.io/js/jaeger-tracer-restify.svg)](https://badge.fury.io/js/jaeger-tracer-restify)
 [![Dependency Status](https://david-dm.org/johnshew/jaeger-tracer-restify.svg)](https://david-dm.org/johnshew/jaeger-tracer-restify.svg)
+[![NPM](https://nodei.co/npm/jaeger-tracer-restify.png)](https://nodei.co/npm/cls2/)
 
 ## Table of contents
 
