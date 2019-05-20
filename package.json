@@ -38,9 +38,11 @@
     "continuation-local-storage": "^3.2.1",
     "express-mung": "^0.5.1",
     "jaeger-client": "^3.15.0",
+    "jest": "^24.8.0",
     "merge-deep": "^3.0.2",
     "node-fetch": "^2.6.0",
-    "opentracing": "^0.14.3"
+    "opentracing": "^0.14.3",
+    "restify": "^8.3.2"
   },
   "devDependencies": {
     "@types/continuation-local-storage": "^3.2.1",
