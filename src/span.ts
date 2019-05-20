@@ -9,7 +9,7 @@ import { Tracer } from "./interfaces/jaegar-tracer.interface";
  * @param parentContext 
  * @param tracer 
  */
-export let spanStart = (name: string, parentContext: SpanContext | null, tracer: Tracer) => {
+export let startSpan = (name: string, parentContext: SpanContext | null, tracer: Tracer) => {
     let span = null;
 
     // make a standalone span when no parent context came 
@@ -29,20 +29,14 @@ export let spanStart = (name: string, parentContext: SpanContext | null, tracer:
  * 
  * tracer: Tracer, parentContext: Span | SpanContext
  */
-export let makeSpan = (name: string) => {
+export let startSpanFromContext = (name: string, parentContext?: SpanContext) => {
     // get tracer from the cls 
     let tracer: Tracer = getFromCls(constants.tracer);
 
     // getting the parent context from the cls 
-    let parentContext: any = getFromCls(constants.parentContext);
+    if (!parentContext) parentContext = getFromCls(constants.parentContext);
 
-    return spanStart(name, parentContext, tracer);
-}
-
-export let makeSpanWithParent = (name: string, parentContext: SpanContext) => {
-    // get tracer from the cls 
-    let tracer: any = getFromCls(constants.tracer);
-    return spanStart(name, parentContext, tracer);
+    return startSpan(name, parentContext || null, tracer);
 }
 
 export let getMainSpan = () => {

@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var clsManager_1 = require("./clsManager");
 var constants_1 = require("./constants");
-exports.spanStart = function (name, parentContext, tracer) {
+exports.startSpan = function (name, parentContext, tracer) {
     var span = null;
     if (!parentContext || (parentContext && !parentContext.spanId))
         return tracer.startSpan(name);
@@ -11,14 +11,11 @@ exports.spanStart = function (name, parentContext, tracer) {
         childOf: parentContext
     });
 };
-exports.makeSpan = function (name) {
+exports.startSpanFromContext = function (name, parentContext) {
     var tracer = clsManager_1.getFromCls(constants_1.constants.tracer);
-    var parentContext = clsManager_1.getFromCls(constants_1.constants.parentContext);
-    return exports.spanStart(name, parentContext, tracer);
-};
-exports.makeSpanWithParent = function (name, parentContext) {
-    var tracer = clsManager_1.getFromCls(constants_1.constants.tracer);
-    return exports.spanStart(name, parentContext, tracer);
+    if (!parentContext)
+        parentContext = clsManager_1.getFromCls(constants_1.constants.parentContext);
+    return exports.startSpan(name, parentContext || null, tracer);
 };
 exports.getMainSpan = function () {
     return clsManager_1.getFromCls(constants_1.constants.mainSpan);

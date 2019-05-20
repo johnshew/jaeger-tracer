@@ -3,7 +3,7 @@ import { Request, Response, Next, RequestHandler } from "restify";
 import { associateNMSWithReqBeforeGoingNext, saveToCls, getFromCls } from "./clsManager";
 import { constants } from "./constants";
 import { Config, Options } from "./interfaces/jaeger-client-config.interface";
-import { spanStart } from "./span";
+import { startSpan } from "./span";
 import { setReqSpanData, setResSpanData, putParentHeaderInOutgoingRequests } from "./spanDataSetter";
 import { initTracer, Tracer } from './tracer';
 import { httpModules } from './interfaces/httpModules.interface';
@@ -39,7 +39,7 @@ export let jaegarTracerMiddleWare = function (httpModules: httpModules, serviceN
 
             // extract the parent context from the tracer
             let parentSpanContext = tracer.extract(FORMAT_HTTP_HEADERS, req.headers);
-            let mainReqSpan = spanStart(req.path(), parentSpanContext, tracer);
+            let mainReqSpan = startSpan(req.path(), parentSpanContext, tracer);
 
             // setting span data on the request
             setReqSpanData(req, res, mainReqSpan);

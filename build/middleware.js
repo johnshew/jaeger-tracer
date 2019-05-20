@@ -18,7 +18,7 @@ exports.jaegarTracerMiddleWare = function (httpModules, serviceName, config, opt
         exports.session.run(function () {
             clsManager_1.saveToCls(constants_1.constants.tracer, exports.tracer);
             var parentSpanContext = exports.tracer.extract(opentracing_1.FORMAT_HTTP_HEADERS, req.headers);
-            var mainReqSpan = span_1.spanStart(req.path(), parentSpanContext, exports.tracer);
+            var mainReqSpan = span_1.startSpan(req.path(), parentSpanContext, exports.tracer);
             spanDataSetter_1.setReqSpanData(req, res, mainReqSpan);
             var responseInterceptor = spanDataSetter_1.setResSpanData(req, res, mainReqSpan, options.filterData);
             spanDataSetter_1.putParentHeaderInOutgoingRequests(httpModules, exports.tracer, mainReqSpan);
