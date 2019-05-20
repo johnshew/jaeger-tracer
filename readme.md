@@ -10,7 +10,7 @@ This is a fork of `jaeger-tracer`.
 
 
 ## Installation
-` npm install jaeger-tracer`
+` npm install jaeger-tracer-restify`
 
 ## Usage
 All you need to do is include the following middleware in your app with the following way
