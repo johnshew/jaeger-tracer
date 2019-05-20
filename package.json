@@ -1,7 +1,7 @@
 {
   "name": "jaeger-tracer-restify",
-  "version": "1.1.8",
-  "description": "client library for jaegar to ease out the instrumenting in express and any other backend application based on express in nodejs",
+  "version": "1.0.0",
+  "description": "helpers for jeager with restify",
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "scripts": {
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/abdoolly/jaeger-tracer.git"
+    "url": "git+https://github.com/johnshew/jaeger-tracer-restify.git"
   },
   "keywords": [
     "jaegar",
@@ -26,9 +26,9 @@
   "author": "johnshew",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/abdoolly/jaeger-tracer/issues"
+    "url": "https://github.com/johnshew/jaeger-tracer-restify/issues"
   },
-  "homepage": "https://github.com/abdoolly/jaeger-tracer#readme",
+  "homepage": "https://github.com/johnshew/jaeger-tracer-restify#readme",
   "dependencies": {
     "continuation-local-storage": "^3.2.1",
     "express-mung": "^0.5.1",
