@@ -8,23 +8,23 @@ exports.initTracer = function (serviceName, config, options) {
     config = mergeDeep({
         serviceName: serviceName,
         sampler: {
-            type: "const",
+            type: 'const',
             param: 1,
         },
         reporter: {
             logSpans: true,
-            agentHost: 'jaegar'
-        }
+            agentHost: 'jaegar',
+        },
     }, config);
     options = mergeDeep({
         logger: {
             info: function (msg) {
-                console.log("INFO ", msg);
+                console.log('INFO ', msg);
             },
             error: function (msg) {
-                console.log("ERROR", msg);
-            }
-        }
+                console.log('ERROR', msg);
+            },
+        },
     }, options);
     var tracer = initJaegerTracer(config, options);
     return tracer;

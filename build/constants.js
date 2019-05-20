@@ -1,13 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var constants = (function () {
-    function constants() {
+var Constants = (function () {
+    function Constants() {
     }
-    constants.clsNamespace = 'jaegar-tracer-cls';
-    constants.mainSpan = 'main-span';
-    constants.tracer = 'tracer';
-    constants.parentContext = 'parent-context';
-    return constants;
+    Constants.jeagerClsNamespace = 'jaegar-tracer-restify-cls';
+    Constants.mainSpan = 'main-span';
+    Constants.tracer = 'tracer';
+    Constants.parentContext = 'parent-context';
+    return Constants;
 }());
-exports.constants = constants;
+exports.Constants = Constants;
 //# sourceMappingURL=constants.js.map

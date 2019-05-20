@@ -47,8 +47,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var opentracing_1 = require("opentracing");
-var requestWrappers_1 = require("./requestWrappers");
 var constants_1 = require("./constants");
+var requestWrappers_1 = require("./requestWrappers");
 var mung = require('express-mung');
 exports.setReqSpanData = function (req, res, span) {
     span.setTag(opentracing_1.Tags.HTTP_URL, req.path());
@@ -59,7 +59,7 @@ exports.setReqSpanData = function (req, res, span) {
         body: req.body,
         params: req.params,
         query: req.query,
-        headers: req.headers
+        headers: req.headers,
     });
     return span;
 };
@@ -70,7 +70,7 @@ exports.setResSpanData = function (req, res, span, filterFunction) {
             status: 'error',
             error: err,
             headers: this.getHeaders ? this.getHeaders() : this.headers || {},
-            statusCode: this.statusCode || 'no status found'
+            statusCode: this.statusCode || 'no status found',
         });
         span.finish();
     });
@@ -90,10 +90,10 @@ exports.setResSpanData = function (req, res, span, filterFunction) {
 var isHttpRequestSaverExecuted = false;
 exports.putParentHeaderInOutgoingRequests = function (_a, tracer, span) {
     var http = _a.http, https = _a.https;
-    var headers = requestWrappers_1.getInjectHeaders(tracer, span);
+    var headers = requestWrappers_1.getInjectionHeaders(tracer, span);
     if (!isHttpRequestSaverExecuted) {
-        constants_1.constants.httpObjects = { http: http.request, https: https.request };
-        Object.freeze(constants_1.constants.httpObjects);
+        constants_1.Constants.httpObjects = { http: http.request, https: https.request };
+        Object.freeze(constants_1.Constants.httpObjects);
         isHttpRequestSaverExecuted = true;
     }
     var newRequestHttp = function () {
@@ -102,7 +102,7 @@ exports.putParentHeaderInOutgoingRequests = function (_a, tracer, span) {
         for (var _i = 0; _i < arguments.length; _i++) {
             args[_i] = arguments[_i];
         }
-        return (_a = constants_1.constants.httpObjects).http.apply(_a, manipulateRequestArgs(args, headers));
+        return (_a = constants_1.Constants.httpObjects).http.apply(_a, manipulateRequestArgs(args, headers));
     };
     var newRequestHttps = function () {
         var _a;
@@ -110,7 +110,7 @@ exports.putParentHeaderInOutgoingRequests = function (_a, tracer, span) {
         for (var _i = 0; _i < arguments.length; _i++) {
             args[_i] = arguments[_i];
         }
-        return (_a = constants_1.constants.httpObjects).https.apply(_a, manipulateRequestArgs(args, headers));
+        return (_a = constants_1.Constants.httpObjects).https.apply(_a, manipulateRequestArgs(args, headers));
     };
     http.request = newRequestHttp;
     https.request = newRequestHttps;
@@ -118,14 +118,16 @@ exports.putParentHeaderInOutgoingRequests = function (_a, tracer, span) {
 function manipulateRequestArgs(args, newHeaders) {
     var stdObject = args[2];
     var isThisStdObject = typeof stdObject === 'object' && stdObject.stdObject;
-    if (isThisStdObject)
+    if (isThisStdObject) {
         newHeaders = stdObject.headers;
+    }
     if (!isThisStdObject) {
         args[1] = theNothingFunction;
         args[2] = { stdObject: true, headers: newHeaders };
     }
-    if (args[0] && args[0]['headers'])
-        args[0]['headers'] = __assign({}, args[0]['headers'] || {}, newHeaders || {});
+    if (args[0] && args[0].headers) {
+        args[0].headers = __assign({}, args[0].headers || {}, newHeaders || {});
+    }
     return args;
 }
 var theNothingFunction = function () { return null; };
@@ -135,8 +137,9 @@ function applyDataFilter(filterFunction, data) {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    if (!filterFunction)
+                    if (!filterFunction) {
                         return [2, data];
+                    }
                     result = filterFunction(data);
                     if (!result.then) return [3, 2];
                     return [4, result];

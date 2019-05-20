@@ -1,7 +1,4 @@
-import { Span, SpanOptions, SpanContext } from "./jaegaer-span.interface";
-
-
-
+import { Span, SpanContext, SpanOptions } from './jaegaer-span.interface';
 
 /**
  * @description Tracer is the entry-point between the instrumentation API and the tracing
@@ -97,4 +94,3 @@ export interface Tracer {
      */
     extract: (format: string, carrier: any) => SpanContext | null;
 }
-

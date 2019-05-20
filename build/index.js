@@ -1,20 +1,22 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var clsManager_1 = require("./clsManager");
-exports.getContext = clsManager_1.getContext;
+exports.getFromJaegerNamespace = clsManager_1.getFromJaegerNamespace;
+exports.getJaegerNamespace = clsManager_1.getJaegerNamespace;
+exports.setInJaegerNamespace = clsManager_1.setInJaegerNamespace;
 var constants_1 = require("./constants");
-exports.constants = constants_1.constants;
+exports.constants = constants_1.Constants;
 var middleware_1 = require("./middleware");
 exports.jaegarTracerMiddleWare = middleware_1.jaegarTracerMiddleWare;
 exports.middlewareTracer = middleware_1.tracer;
 var requestWrappers_1 = require("./requestWrappers");
-exports.getInjectHeaders = requestWrappers_1.getInjectHeaders;
+exports.getInjectionHeaders = requestWrappers_1.getInjectionHeaders;
 exports.requestWrapper = requestWrappers_1.requestWrapper;
 exports.unirestWrapper = requestWrappers_1.unirestWrapper;
 var span_1 = require("./span");
-exports.startSpanFromContext = span_1.startSpanFromContext;
-exports.startSpan = span_1.startSpan;
 exports.getMainSpan = span_1.getMainSpan;
+exports.startSpan = span_1.startSpan;
+exports.startSpanFromJaegerNamespace = span_1.startSpanFromJaegerNamespace;
 var tracer_1 = require("./tracer");
 exports.initTracer = tracer_1.initTracer;
 //# sourceMappingURL=index.js.map

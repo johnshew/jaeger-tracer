@@ -1,5 +1,5 @@
-export declare class constants {
-    static clsNamespace: string;
+export declare class Constants {
+    static jeagerClsNamespace: string;
     static mainSpan: string;
     static tracer: string;
     static parentContext: string;

@@ -1,4 +1,4 @@
-import { Tracer } from "./jaegar-tracer.interface";
+import { Tracer } from './jaegar-tracer.interface';
 export interface Span {
     context: () => SpanContext;
     tracer: () => Tracer;

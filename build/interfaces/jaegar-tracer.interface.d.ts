@@ -1,4 +1,4 @@
-import { Span, SpanOptions, SpanContext } from "./jaegaer-span.interface";
+import { Span, SpanContext, SpanOptions } from './jaegaer-span.interface';
 export interface Tracer {
     startSpan: (name: string, options?: SpanOptions) => Span;
     inject: (spanContext: SpanContext | Span, format: string, carrier: any) => void;

@@ -1,7 +1,7 @@
 import { Namespace } from 'continuation-local-storage';
+import { Next, Request, RequestHandler, Response } from 'restify';
 import { Span } from './interfaces/jaegaer-span.interface';
-import { Request, Response, Next, RequestHandler } from 'restify';
 export declare let associateNMSWithReqBeforeGoingNext: (req: Request, res: Response, next: Next, mainSpan: Span, interceptorMiddleware: RequestHandler) => void;
-export declare let saveToCls: (key: string, value: any) => any;
-export declare let getFromCls: (key: string) => any;
-export declare let getContext: () => Namespace;
+export declare let setInJaegerNamespace: (key: string, value: any) => any;
+export declare let getFromJaegerNamespace: (key: string) => any;
+export declare let getJaegerNamespace: () => Namespace;

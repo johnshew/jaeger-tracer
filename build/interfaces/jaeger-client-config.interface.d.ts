@@ -1,7 +1,7 @@
 export interface Config {
     serviceName?: string;
     sampler?: {
-        type?: "const" | "probabilistic" | "ratelimiting" | "remote" | String;
+        type?: 'const' | 'probabilistic' | 'ratelimiting' | 'remote' | String;
         param?: number;
         hostPort?: string;
         host?: string;

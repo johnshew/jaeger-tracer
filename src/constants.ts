@@ -1,12 +1,12 @@
-export class constants {
-    static clsNamespace = 'jaegar-tracer-cls';
+export class Constants {
+    public static jeagerClsNamespace = 'jaegar-tracer-restify-cls';
 
     /**
      * context keys
      */
-    static mainSpan = 'main-span';
-    static tracer = 'tracer';
-    static parentContext = 'parent-context';
+    public static mainSpan = 'main-span';
+    public static tracer = 'tracer';
+    public static parentContext = 'parent-context';
 
-    static httpObjects: { http: any, https: any };
+    public static httpObjects: { http: any, https: any };
 }

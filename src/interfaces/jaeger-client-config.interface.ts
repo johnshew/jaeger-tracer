@@ -9,13 +9,13 @@ export interface Config {
      * @description sampler configuration
      */
     sampler?: {
-        type?: "const" | "probabilistic" | "ratelimiting" | "remote" | String;
+        type?: 'const' | 'probabilistic' | 'ratelimiting' | 'remote' | String;
         param?: number;
         hostPort?: string;
         host?: string;
         port?: number;
         refreshIntervalMs?: number;
-    },
+    };
 
     /**
      * @description reporter configuration
@@ -28,7 +28,7 @@ export interface Config {
         username?: string;
         password?: string;
         flushIntervalMs?: number;
-    },
+    };
 
     /**
      * @description throttler configuration
@@ -37,7 +37,7 @@ export interface Config {
         host?: string;
         port?: number;
         refreshIntervalMs?: number;
-    },
+    };
 
     /**
      * @description this is a property to control if the tracer should work or not
@@ -45,7 +45,7 @@ export interface Config {
      */
     shouldTrace?: () => Boolean | Boolean;
 
-};
+}
 
 export interface Options {
     tags?: any;
@@ -53,8 +53,8 @@ export interface Options {
     logger?: any;
 
     /**
-     * @description this is a function which will be applied on the data before they 
-     * are put into log 
+     * @description this is a function which will be applied on the data before they
+     * are put into log
      * @returns has to return the data to be logged or else it will log nothing
      */
     filterData?: (data: any) => any;

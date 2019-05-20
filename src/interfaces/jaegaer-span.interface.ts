@@ -1,4 +1,4 @@
-import { Tracer } from "./jaegar-tracer.interface";
+import { Tracer } from './jaegar-tracer.interface';
 
 export interface Span {
     /**
@@ -108,7 +108,6 @@ export interface Span {
      */
     log: (keyValuePairs: { [key: string]: any }, timestamp?: number) => this;
 
-
     /**
      * Sets the end timestamp and finalizes Span state.
      *
@@ -124,7 +123,6 @@ export interface Span {
      */
     finish: (finishTime?: number) => void;
 }
-
 
 export interface SpanOptions {
 
@@ -177,7 +175,6 @@ export interface Reference {
     referencedContext: () => SpanContext;
 }
 
-
 export interface SpanContext {
     traceId: number;
     spanId: number;
@@ -203,8 +200,8 @@ export interface SpanContext {
 
     /**
      * @description create a new context with baggage item
-     * @param key 
-     * @param value 
+     * @param key
+     * @param value
      */
     withBaggageItem(key: string, value: string): SpanContext;
 }

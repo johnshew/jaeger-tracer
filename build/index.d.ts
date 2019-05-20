@@ -1,6 +1,6 @@
-export { getContext } from './clsManager';
-export { constants } from './constants';
+export { getFromJaegerNamespace, getJaegerNamespace, setInJaegerNamespace } from './clsManager';
+export { Constants as constants } from './constants';
 export { jaegarTracerMiddleWare, tracer as middlewareTracer } from './middleware';
-export { getInjectHeaders, requestWrapper, unirestWrapper } from './requestWrappers';
-export { startSpanFromContext, startSpan, getMainSpan } from './span';
-export { initTracer } from "./tracer";
+export { getInjectionHeaders, requestWrapper, unirestWrapper } from './requestWrappers';
+export { getMainSpan, startSpan, startSpanFromJaegerNamespace } from './span';
+export { initTracer } from './tracer';
