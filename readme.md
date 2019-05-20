@@ -44,7 +44,7 @@ The package inside use the [continuation-local-storage](https://www.npmjs.com/pa
 Also there is a function which gets you the context to be able to pass it over if it is lost in some place in your code.
 
 ## API Reference
-The package exports the following functions to give you full control and flexibility below we will list the function telling what is the usage of each one and what do they do.
+The package exports the following functions:
 
 #### jaegarTracerMiddleware
 #### initTracer
