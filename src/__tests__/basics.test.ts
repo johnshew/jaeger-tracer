@@ -1,5 +1,3 @@
-// ! TODO - look at jaeger-auto
-
 
 import { default as fetch } from 'node-fetch';
 import { default as restify } from 'restify';
