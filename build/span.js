@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var clsManager_1 = require("./clsManager");
-var constants_1 = require("./constants");
-exports.startSpan = function (name, parentContext, tracer) {
-    var span = null;
+const clsManager_1 = require("./clsManager");
+const constants_1 = require("./constants");
+exports.startSpan = (name, parentContext, tracer) => {
+    const span = null;
     if (!parentContext || (parentContext && !parentContext.spanId)) {
         return tracer.startSpan(name);
     }
@@ -12,14 +12,14 @@ exports.startSpan = function (name, parentContext, tracer) {
         childOf: parentContext,
     });
 };
-exports.startSpanFromJaegerNamespace = function (name, parentContext) {
-    var tracer = clsManager_1.getFromJaegerNamespace(constants_1.Constants.tracer);
+exports.startSpanFromJaegerNamespace = (name, parentContext) => {
+    const tracer = clsManager_1.getFromJaegerNamespace(constants_1.Constants.tracer);
     if (!parentContext) {
         parentContext = clsManager_1.getFromJaegerNamespace(constants_1.Constants.parentContext);
     }
     return exports.startSpan(name, parentContext || null, tracer);
 };
-exports.getMainSpan = function () {
+exports.getMainSpan = () => {
     return clsManager_1.getFromJaegerNamespace(constants_1.Constants.mainSpan);
 };
 //# sourceMappingURL=span.js.map

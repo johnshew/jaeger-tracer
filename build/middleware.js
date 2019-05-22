@@ -1,27 +1,25 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var continuation_local_storage_1 = require("continuation-local-storage");
-var opentracing_1 = require("opentracing");
-var clsManager_1 = require("./clsManager");
-var constants_1 = require("./constants");
-var span_1 = require("./span");
-var spanDataSetter_1 = require("./spanDataSetter");
-var tracer_1 = require("./tracer");
+const continuation_local_storage_1 = require("continuation-local-storage");
+const opentracing_1 = require("opentracing");
+const clsManager_1 = require("./clsManager");
+const constants_1 = require("./constants");
+const span_1 = require("./span");
+const spanDataSetter_1 = require("./spanDataSetter");
+const tracer_1 = require("./tracer");
 exports.session = continuation_local_storage_1.getNamespace(constants_1.Constants.jeagerClsNamespace);
-exports.jaegarTracerMiddleWare = function (httpModules, serviceName, config, options) {
-    if (config === void 0) { config = {}; }
-    if (options === void 0) { options = {}; }
+exports.jaegarTracerMiddleWare = function (httpModules, serviceName, config = {}, options = {}) {
     if (!shouldTrace(config.shouldTrace)) {
-        return function (req, res, next) { return next(); };
+        return (req, res, next) => next();
     }
     exports.tracer = tracer_1.initTracer(serviceName, config, options);
-    var middleware = function (req, res, next) {
-        exports.session.run(function () {
+    const middleware = (req, res, next) => {
+        exports.session.run(() => {
             clsManager_1.setInJaegerNamespace(constants_1.Constants.tracer, exports.tracer);
-            var parentSpanContext = exports.tracer.extract(opentracing_1.FORMAT_HTTP_HEADERS, req.headers);
-            var mainReqSpan = span_1.startSpan(req.path(), parentSpanContext, exports.tracer);
+            const parentSpanContext = exports.tracer.extract(opentracing_1.FORMAT_HTTP_HEADERS, req.headers);
+            const mainReqSpan = span_1.startSpan(req.path(), parentSpanContext, exports.tracer);
             spanDataSetter_1.setReqSpanData(req, res, mainReqSpan);
-            var responseInterceptor = spanDataSetter_1.setResSpanData(req, res, mainReqSpan, options.filterData);
+            const responseInterceptor = spanDataSetter_1.setResSpanData(req, res, mainReqSpan, options.filterData);
             spanDataSetter_1.putParentHeaderInOutgoingRequests(httpModules, exports.tracer, mainReqSpan);
             clsManager_1.associateNMSWithReqBeforeGoingNext(req, res, next, mainReqSpan, responseInterceptor);
         });
@@ -32,7 +30,7 @@ function shouldTrace(isTraceWorking) {
     if (isTraceWorking === undefined) {
         return true;
     }
-    var type = typeof isTraceWorking;
+    const type = typeof isTraceWorking;
     if (type === 'boolean') {
         return isTraceWorking;
     }
